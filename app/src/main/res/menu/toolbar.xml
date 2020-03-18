@@ -2,6 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <item
+        android:id="@+id/action_changerate"
+        android:title="切换宽高比"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_filp_x"
+        android:title="FILP_X"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_changecamera"
+        android:title="切换摄像头"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_settings1"
         android:title="640*480"

@@ -29,3 +29,7 @@ fun View.showToast(msg: String) {
     Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
 }
 
+fun View.showShortToast(msg: String) {
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+}
+

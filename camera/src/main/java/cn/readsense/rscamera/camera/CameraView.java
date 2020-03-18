@@ -27,8 +27,8 @@ public class CameraView extends RelativeLayout {
     private static final String TAG = "CameraView";
     private static final int MAIN_RET = 0x101;
     private static final int THREAD_RET = 0x102;
-    public static final int MODE_SURFACEVIEW = 0x103;
-    public static final int MODE_TEXTUREVIEW = 0x104;
+    public static final int PREVIEWMODE_SURFACEVIEW = 0x103;
+    public static final int PREVIEWMODE_TEXTUREVIEW = 0x104;
     private int mode;
     private Context context;
     private int oritationDisplay = -1;
@@ -82,9 +82,9 @@ public class CameraView extends RelativeLayout {
 
     public View getShowView() {
         switch (mode) {
-            case MODE_SURFACEVIEW:
+            case PREVIEWMODE_SURFACEVIEW:
                 return previewSurfaceView;
-            case MODE_TEXTUREVIEW:
+            case PREVIEWMODE_TEXTUREVIEW:
                 return previewTextureView;
         }
         return null;
@@ -101,7 +101,7 @@ public class CameraView extends RelativeLayout {
     }
 
     public void showCameraView(int width, int height, int facing) {
-        showCameraView(width, height, facing, MODE_SURFACEVIEW);
+        showCameraView(width, height, facing, PREVIEWMODE_SURFACEVIEW);
     }
 
     public void showCameraView(int width, int height, int facing, final int mode) {
@@ -120,10 +120,10 @@ public class CameraView extends RelativeLayout {
         }
 
         switch (mode) {
-            case MODE_SURFACEVIEW:
+            case PREVIEWMODE_SURFACEVIEW:
                 settingSurfaceView();
                 break;
-            case MODE_TEXTUREVIEW:
+            case PREVIEWMODE_TEXTUREVIEW:
                 settingTextureView();
                 break;
         }
