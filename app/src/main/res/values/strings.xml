@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">RSCamera</string>
+
+    <string name="camera_access_required">Camera access is required to display the camera preview.</string>
+    <string name="ok">OK</string>
+    <string name="camera_permission_not_available">Permission is not available. Requesting camera permission.</string>
+    <string name="camera_permission_available">Camera permission is available. Starting preview.</string>
+    <string name="camera_permission_granted">Camera permission was granted. Starting preview.</string>
+    <string name="camera_permission_denied">Camera permission request was denied.</string>
 </resources>

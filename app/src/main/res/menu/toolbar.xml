@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_settings1"
+        android:title="640*480"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings2"
+        android:title="1280*720"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_settings3"
+        android:title="1920*1080"
+        app:showAsAction="never" />
+</menu>

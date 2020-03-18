@@ -4,13 +4,11 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 
-import cn.readsense.camera.exception.CameraDisabledException;
-import cn.readsense.camera.exception.NoCameraException;
 
 public interface ICameraController {
 
 
-    void openCamera(int cameraFacing) throws NoCameraException;
+    void openCamera(int cameraFacing);
 
     void setParamPreviewSize(int width, int height);
 
@@ -36,7 +34,7 @@ public interface ICameraController {
 
     void releaseCamera();
 
-    void hasCameraDevice(Context ctx) throws CameraDisabledException, NoCameraException;
+    void hasCameraDevice(Context ctx);
 
     boolean hasCameraFacing(int facing);
 

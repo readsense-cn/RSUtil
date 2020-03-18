@@ -13,8 +13,6 @@ import android.view.SurfaceHolder;
 import java.io.IOException;
 import java.util.List;
 
-import cn.readsense.camera.exception.CameraDisabledException;
-import cn.readsense.camera.exception.NoCameraException;
 
 /**
  * Created by dou on 2017/11/6.
@@ -36,7 +34,7 @@ public class CameraController implements ICameraController {
     public CameraController() {
     }
 
-    public void openCamera(int cameraFacing) throws NoCameraException {
+    public void openCamera(int cameraFacing) {
         try {
             facing = cameraFacing;
             if (camera != null) {
@@ -46,7 +44,7 @@ public class CameraController implements ICameraController {
             camera = Camera.open(cameraFacing);
             parameters = camera.getParameters();
         } catch (Exception e) {
-            throw new NoCameraException();
+            throw new Error(String.format("open camera %d failed: %s", cameraFacing, e.getMessage()));
         }
     }
 
@@ -170,17 +168,17 @@ public class CameraController implements ICameraController {
         return result;
     }
 
-    public void hasCameraDevice(Context ctx) throws CameraDisabledException, NoCameraException {
+    public void hasCameraDevice(Context ctx) {
         // Check if device policy has disabled the camera.
 
         DevicePolicyManager dpm = (DevicePolicyManager) ctx.getSystemService(Context.DEVICE_POLICY_SERVICE);
         final boolean hasSystemFeature = ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
         if (dpm.getCameraDisabled(null) || !hasSystemFeature) {
-            throw new CameraDisabledException();
+            throw new Error(String.format("Found No Camera Feature"));
         }
         int numberOfCameras = Camera.getNumberOfCameras();
         if (numberOfCameras == 0) {
-            throw new NoCameraException();
+            throw new Error(String.format("Found NoCameraException"));
         }
     }
 
