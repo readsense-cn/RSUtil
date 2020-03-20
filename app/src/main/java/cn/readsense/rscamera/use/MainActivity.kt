@@ -2,14 +2,14 @@ package cn.readsense.rscamera.use
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.hardware.Camera
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.RelativeLayout
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import cn.readsense.rscamera.camera.CameraView
+import cn.readsense.rscamera.camera.CameraView.PreviewFrameCallback
 import cn.readsense.rscamera.camera.PreviewTextureView
 import cn.readsense.rscamera.use.util.checkSelfPermissionCompat
 import cn.readsense.rscamera.use.util.requestPermissionsCompat
@@ -60,12 +60,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showPreview() {
+        cameraview.setDrawView()
+
+        cameraview.addPreviewFrameCallback(object : PreviewFrameCallback {
+
+            override fun analyseData(data: ByteArray?): Any {
+                return 0
+            }
+
+            override fun analyseDataEnd(t: Any?) {
+
+            }
+
+        })
+
         cameraview.showCameraView(
             PREVIEWWIDTH,
             PREVIEWHEIGHT,
             CAMERA_ID, CameraView.PREVIEWMODE_TEXTUREVIEW
         )
-
 
         var rate_info = "不支持修改预览比例，否则会拉伸图像"
 
