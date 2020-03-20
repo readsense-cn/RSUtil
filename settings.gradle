@@ -1,2 +1,2 @@
-include ':app', ':util'
-rootProject.name='RSCamera'
+include ':rscamera', ':util'
+rootProject.name='RSUtil'
