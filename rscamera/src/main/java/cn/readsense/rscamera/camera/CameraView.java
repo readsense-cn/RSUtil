@@ -111,6 +111,8 @@ public class CameraView extends RelativeLayout {
         try {
             PREVIEW_WIDTH = width;
             PREVIEW_HEIGHT = height;
+            buffer = null;
+            temp = null;
             FACING = facing;
 
             cameraController.hasCameraDevice(context);
