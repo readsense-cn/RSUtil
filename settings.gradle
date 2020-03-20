@@ -1,2 +1,2 @@
-include ':app', ':rscamera'
+include ':app', ':util'
 rootProject.name='RSCamera'

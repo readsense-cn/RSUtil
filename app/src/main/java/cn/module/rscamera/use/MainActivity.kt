@@ -1,18 +1,16 @@
-package cn.readsense.rscamera.use
+package cn.module.rscamera.use
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
-import cn.readsense.rscamera.camera.CameraView
-import cn.readsense.rscamera.camera.CameraView.PreviewFrameCallback
-import cn.readsense.rscamera.camera.PreviewTextureView
-import cn.readsense.rscamera.use.util.checkSelfPermissionCompat
-import cn.readsense.rscamera.use.util.requestPermissionsCompat
+import cn.module.rscamera.use.util.checkSelfPermissionCompat
+import cn.module.rscamera.use.util.requestPermissionsCompat
+import cn.readsense.module.camera1.CameraView
+import cn.readsense.module.camera1.PreviewTextureView
 import com.example.android.basicpermissions.util.showToast
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -25,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private var PREVIEWWIDTH = 1280
     private var PREVIEWHEIGHT = 720
-    private var CAMERA_ID = CAMERA_ID_BACK
+    private var CAMERA_ID = CAMERA_ID_FRONT
 
     private val rates = floatArrayOf(0f, 3 / 2f, 1f, 2 / 3f)
     private val rates_str = arrayOf("全屏", "3:2", "1:1", "2:3")
@@ -62,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     fun showPreview() {
         cameraview.setDrawView()
 
-        cameraview.addPreviewFrameCallback(object : PreviewFrameCallback {
+        cameraview.addPreviewFrameCallback(object : CameraView.PreviewFrameCallback {
 
             override fun analyseData(data: ByteArray?): Any {
                 return 0
@@ -97,8 +95,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             (cameraview.showView as PreviewTextureView).setConfigureTransform(
+                PREVIEWHEIGHT,
                 PREVIEWWIDTH,
-                PREVIEWHEIGHT, flip
+//                PREVIEWHEIGHT,
+                flip
             )
 
         } else {

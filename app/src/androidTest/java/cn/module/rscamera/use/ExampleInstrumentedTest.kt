@@ -1,4 +1,4 @@
-package cn.readsense.rscamera.use
+package cn.module.rscamera.use
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

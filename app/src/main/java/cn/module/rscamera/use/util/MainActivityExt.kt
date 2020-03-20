@@ -1,7 +1,7 @@
-package cn.readsense.rscamera.use.util
+package cn.module.rscamera.use.util
 
 import androidx.core.app.ActivityCompat
-import cn.readsense.rscamera.use.MainActivity
+import cn.module.rscamera.use.MainActivity
 
 fun MainActivity.checkSelfPermissionCompat(permission: String) =
     ActivityCompat.checkSelfPermission(this, permission)

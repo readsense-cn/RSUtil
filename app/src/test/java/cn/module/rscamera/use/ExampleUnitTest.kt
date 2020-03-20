@@ -1,4 +1,4 @@
-package cn.readsense.rscamera.use
+package cn.module.rscamera.use
 
 import org.junit.Test
 

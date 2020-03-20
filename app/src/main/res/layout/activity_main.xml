@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:gravity="center">
 
-        <cn.readsense.rscamera.camera.CameraView
+        <cn.readsense.module.camera1.CameraView
             android:id="@+id/cameraview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
