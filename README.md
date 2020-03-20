@@ -6,7 +6,7 @@
 Android 6.0以上需要动态申请权限
 ### 使用
 链接rscamera，在指定页面位置添加控件
-```
+```xml
 <cn.readsense.rscamera.camera.CameraView
     android:id="@+id/cameraview"
     android:layout_width="wrap_content"
@@ -15,7 +15,7 @@ Android 6.0以上需要动态申请权限
 
 ### 支持功能
 #### 1. 分别使用SurfaceView、TextureView渲染预览画面
-```
+```kotlin
 //默认使用SurfaceView渲染
 cameraview.showCameraView(
     PREVIEWWIDTH,
@@ -31,7 +31,7 @@ cameraview.showCameraView(
 ```
 #### 2. 切换摄像头
 
-```
+```kotlin
 //改变camera id后释放重新show
 cameraview.releaseCamera()
 cameraview.showCameraView(
@@ -41,7 +41,7 @@ cameraview.showCameraView(
 )
 ```
 #### 3. 任意角度旋转摄像头预览方向
-```
+```kotlin
 //show之前，设定display角度，支持（0, 90, 180, 270）
 //输入非90倍数将根据activity方向以及设备自动适应，可能不太灵
 cameraview.setOritationDisplay(90)
@@ -53,7 +53,7 @@ cameraview.showCameraView(
 )
 ```
 #### 4. 修改预览分辨率
-```
+```kotlin
 //根据摄像头支持的分辨率，release后重新show
 cameraview.releaseCamera()
 PREVIEWWIDTH = 640
@@ -68,7 +68,7 @@ cameraview.showCameraView(
 * 仅支持使用TextureView渲染
 
 
-```
+```kotlin
 cameraview.showCameraView(
     PREVIEWWIDTH,
     PREVIEWHEIGHT,
@@ -86,7 +86,7 @@ if (cameraview.showView is PreviewTextureView) {
 
 首先设定cameraview到指定宽高，然后调用setConfigureTransform变换
 
-```
+```kotlin
 cameraview.layoutParams.width = 400
 cameraview.layoutParams.height = 300
 cameraview.requestLayout()
@@ -98,7 +98,7 @@ cameraview.requestLayout()
 ```
 #### 7. 回调数据
 注册回调后再启动摄像头
-```
+```kotlin
 cameraview.addPreviewFrameCallback(object : PreviewFrameCallback {
 	//接收yuv数据流，处理后的结果return,该方法执行在子线程
     override fun analyseData(data: ByteArray?): Any {
@@ -111,7 +111,7 @@ cameraview.addPreviewFrameCallback(object : PreviewFrameCallback {
 })
 ```
 #### 8. 提供预览界面上绘制必要信息的DrawView
-```
+```kotlin
 //showCameraView之前配置DrawView
 cameraview.setDrawView()
 
@@ -125,8 +125,6 @@ if (canvas != null) {
 
     drawView.holder.unlockCanvasAndPost(canvas)
 }
-
-
 ```
 
 ### END
