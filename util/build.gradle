@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.00.001"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+//    implementation rootProject.ext.dependency["appcompat-v7"]
+//    implementation rootProject.ext.dependency["retrofit"]
+//    implementation rootProject.ext.dependency["converter-gson"]
+//    implementation rootProject.ext.dependency["retrofit2-adapter-rxjava2"]
+//    implementation rootProject.ext.dependency["rxandroid"]
+//    implementation rootProject.ext.dependency["butterknife"]
+//    annotationProcessor rootProject.ext.dependency["butterknife-compiler"]
+
+}
+repositories {
+    mavenCentral()
+}
