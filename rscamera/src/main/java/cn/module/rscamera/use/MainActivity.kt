@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity() {
     fun showPreview() {
         cameraview.setDrawView()
 
+        cameraview.setOritationDisplay(90)
+
         cameraview.addPreviewFrameCallback(object : CameraView.PreviewFrameCallback {
 
             override fun analyseData(data: ByteArray?): Any {
@@ -72,7 +74,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
-
         cameraview.showCameraView(
             PREVIEWWIDTH,
             PREVIEWHEIGHT,

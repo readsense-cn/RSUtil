@@ -168,7 +168,7 @@ public class CameraController implements ICameraController {
         return result;
     }
 
-    public void hasCameraDevice(Context ctx) {
+    public boolean hasCameraDevice(Context ctx) {
         // Check if device policy has disabled the camera.
 
         DevicePolicyManager dpm = (DevicePolicyManager) ctx.getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -180,6 +180,8 @@ public class CameraController implements ICameraController {
         if (numberOfCameras == 0) {
             throw new Error(String.format("Found NoCameraException"));
         }
+
+        return true;
     }
 
     @Override

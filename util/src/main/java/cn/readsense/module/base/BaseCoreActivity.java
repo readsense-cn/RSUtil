@@ -22,7 +22,6 @@ public abstract class BaseCoreActivity extends AppCompatActivity {
     Unbinder unbinder;
     public Context context;
 
-
     int screenWidth, screenHeight;
     private String permissions[];
 

@@ -78,6 +78,8 @@ public class CameraView extends RelativeLayout {
         this.context = context;
         setBackgroundColor(Color.BLACK);
         llog("CameraView init");
+
+        cameraController = new CameraController();
     }
 
     public View getShowView() {
@@ -106,7 +108,6 @@ public class CameraView extends RelativeLayout {
 
     public void showCameraView(int width, int height, int facing, final int mode) {
 
-        cameraController = new CameraController();
         this.mode = mode;
         try {
             PREVIEW_WIDTH = width;
@@ -318,4 +319,9 @@ public class CameraView extends RelativeLayout {
         if (!debug)
             Log.d(TAG, msg);
     }
+
+    public boolean hasCameraFacing(int facing) {
+        return cameraController.hasCameraFacing(facing);
+    }
+
 }
