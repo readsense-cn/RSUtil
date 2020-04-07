@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     private var rate_positon = 0
     private var flip = false
+    private var scale_width = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,9 +96,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             (cameraview.showView as PreviewTextureView).setConfigureTransform(
-                PREVIEWHEIGHT,
-                PREVIEWWIDTH,
-//                PREVIEWHEIGHT,
+                if (scale_width) PREVIEWWIDTH else PREVIEWHEIGHT,
+                if (scale_width) PREVIEWHEIGHT else PREVIEWWIDTH,
                 flip
             )
 
@@ -160,6 +160,12 @@ class MainActivity : AppCompatActivity() {
 
             R.id.action_filp_x -> {
                 flip = !flip
+                releaseCamera()
+                openCamera()
+            }
+
+            R.id.action_changescale -> {
+                scale_width = !scale_width
                 releaseCamera()
                 openCamera()
             }

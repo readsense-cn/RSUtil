@@ -18,6 +18,11 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/action_changescale"
+        android:title="切换拉伸方向"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_settings1"
         android:title="640*480"
         app:showAsAction="never" />
