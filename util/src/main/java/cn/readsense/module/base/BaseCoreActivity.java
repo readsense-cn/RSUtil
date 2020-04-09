@@ -8,11 +8,16 @@ import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleObserver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.readsense.module.permissions.PermissionListener;
 import cn.readsense.module.permissions.PermissionsUtil;
+import cn.readsense.module.util.DLog;
 import cn.readsense.module.util.DisplayUtil;
 import cn.readsense.module.util.ToastUtils;
 
@@ -24,11 +29,11 @@ public abstract class BaseCoreActivity extends AppCompatActivity {
 
     int screenWidth, screenHeight;
     private String permissions[];
+    private List<LifecycleObserver> lifecycleObservers = new ArrayList<>();
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
-
         unbinder = ButterKnife.bind(this);
     }
 
@@ -45,12 +50,13 @@ public abstract class BaseCoreActivity extends AppCompatActivity {
         final int layoutId = getLayoutId();
         if (layoutId != 0) {
             setContentView(layoutId);
+
             if (permissions != null) {
                 if (!PermissionsUtil.hasPermission(context, permissions)) {
                     PermissionsUtil.requestPermission(context, new PermissionListener() {
                         @Override
                         public void permissionGranted(@NonNull String[] permission) {
-                            initView();
+                            registerViewAndObserve();
                         }
 
                         @Override
@@ -59,17 +65,36 @@ public abstract class BaseCoreActivity extends AppCompatActivity {
                         }
                     }, permissions);
                 } else {
-                    initView();
+                    registerViewAndObserve();
                 }
             } else {
-                initView();
+                registerViewAndObserve();
             }
+        } else {
+            throw new Error("internal error: layoutId = 0!!");
         }
-
     }
 
-    public void requestPermissions(String[] permissions) {
+    private void registerViewAndObserve() {
+        initView();
+        if (lifecycleObservers != null && lifecycleObservers.size() > 0) {
+            for (LifecycleObserver observer : lifecycleObservers) {
+                getLifecycle().addObserver(observer);
+            }
+        }
+    }
+
+
+    public void requestPermissions(String... permissions) {
         this.permissions = permissions;
+    }
+
+    public void addLifecycleObserver(LifecycleObserver lifecycleObserver) {
+        if (!lifecycleObservers.contains(lifecycleObserver)) {
+            lifecycleObservers.add(lifecycleObserver);
+        } else {
+            throw new Error("internal error: observer already input!!");
+        }
     }
 
     public void showToast(String msg) {

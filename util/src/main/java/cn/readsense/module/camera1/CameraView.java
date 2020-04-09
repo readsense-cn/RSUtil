@@ -18,6 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import java.util.Locale;
 
@@ -25,7 +28,7 @@ import java.util.Locale;
  * Created by dou on 2017/11/7.
  */
 
-public class CameraView extends RelativeLayout {
+public class CameraView extends RelativeLayout implements LifecycleObserver {
 
     private static final String TAG = "CameraView";
     private static final int MAIN_RET = 0x101;
@@ -111,6 +114,7 @@ public class CameraView extends RelativeLayout {
         return previewTextureView;
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void showCameraView() {
 
         try {
@@ -273,6 +277,7 @@ public class CameraView extends RelativeLayout {
 
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     public void releaseCamera() {
         is_thread_run = false;
 

@@ -35,7 +35,7 @@ class ToolWindow implements RadioGroup.OnCheckedChangeListener {
                     }
                 });
 
-        final AlertDialog dialog = builder.show();
+        AlertDialog dialog = builder.show();
         dialog.setCanceledOnTouchOutside(false);
 
         int index = cameraParams.facing == 0 ? R.id.facing_0 : R.id.facing_1;
