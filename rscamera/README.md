@@ -1,10 +1,5 @@
 ## Android Camera简易使用方案
 
-20200408:更新日志
-1. 移除SurfaceView预览
-2. 新增CameraParams用于管理摄像头参数
-3. 长按view，调出配置参数页面
-
 ### 权限
 ```
 <uses-permission android:name="android.permission.CAMERA" />
