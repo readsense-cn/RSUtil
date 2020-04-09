@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import cn.sense.icount.github.BuildConfig;
+import cn.readsense.module.BuildConfig;
 import cn.readsense.module.base.BaseApp;
 
 /**

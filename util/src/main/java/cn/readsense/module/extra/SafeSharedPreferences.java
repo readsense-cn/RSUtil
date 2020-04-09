@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import cn.sense.icount.github.BuildConfig;
+import cn.readsense.module.BuildConfig;
 
 /**
  * Created by dou on 2017/12/11.

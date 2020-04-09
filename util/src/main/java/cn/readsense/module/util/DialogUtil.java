@@ -34,6 +34,15 @@ public class DialogUtil {
         return builder;
     }
 
+    public static AlertDialog.Builder dialogBuilder(Context context, String title, int view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(view);
+        if (!StringUtils.isEmpty(title)) {
+            builder.setTitle(title);
+        }
+        return builder;
+    }
+
     public static AlertDialog.Builder dialogBuilder(Context context, int titleResId, View view) {
         String title = titleResId > 0 ? context.getResources().getString(titleResId) : null;
         return dialogBuilder(context, title, view);

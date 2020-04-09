@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.sense.icount.github">
+    package="cn.readsense.module">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <application

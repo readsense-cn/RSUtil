@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:padding="5dp"
+            android:text="摄像头方向："
+            android:textColor="#000"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/config_select_facing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/facing_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="前置" />
+
+            <RadioButton
+                android:id="@+id/facing_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="后置" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:padding="5dp"
+            android:text="预览方向    ："
+            android:textColor="#000"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rg_angle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/angle_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
+
+            <RadioButton
+                android:id="@+id/angle_90"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="90" />
+
+            <RadioButton
+                android:id="@+id/angle_180"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="180" />
+
+            <RadioButton
+                android:id="@+id/angle_270"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="270" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:padding="5dp"
+            android:text="左右翻转    ："
+            android:textColor="#000"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/flip_"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/flip_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="是" />
+
+            <RadioButton
+                android:id="@+id/flip_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="否" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            android:padding="5dp"
+            android:text="横向拉伸    ："
+            android:textColor="#000"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/scale_"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/scale_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="是" />
+
+            <RadioButton
+                android:id="@+id/scale_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="否" />
+        </RadioGroup>
+    </LinearLayout>
+
+</LinearLayout>

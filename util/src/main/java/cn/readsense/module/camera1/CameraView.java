@@ -11,10 +11,13 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import java.util.Locale;
 
@@ -27,15 +30,18 @@ public class CameraView extends RelativeLayout {
     private static final String TAG = "CameraView";
     private static final int MAIN_RET = 0x101;
     private static final int THREAD_RET = 0x102;
-    public static final int PREVIEWMODE_SURFACEVIEW = 0x103;
-    public static final int PREVIEWMODE_TEXTUREVIEW = 0x104;
-    private int mode;
-    private Context context;
-    private int oritationDisplay = -1;
 
-    private int PREVIEW_WIDTH;
-    private int PREVIEW_HEIGHT;
-    private int FACING;
+    private Context context;
+    private CameraParams cameraParams;
+
+    public CameraParams getCameraParams() {
+        return cameraParams;
+    }
+
+    public void setCameraParams(CameraParams cameraParams) {
+        this.cameraParams = cameraParams;
+    }
+
 
     private byte buffer[];
     private byte temp[];
@@ -50,11 +56,10 @@ public class CameraView extends RelativeLayout {
     Handler handlerMain;
 
     private SurfaceView drawView;
-    private PreviewSurfaceView previewSurfaceView;
     private PreviewTextureView previewTextureView;
-
     private Paint paint;
 
+    private ToolWindow toolWindow;
 
     public SurfaceView getDrawView() {
         return drawView;
@@ -68,53 +73,49 @@ public class CameraView extends RelativeLayout {
         paint.setAntiAlias(true);
     }
 
+
+    public void showToolWindow() {
+        if (toolWindow == null)
+            toolWindow = new ToolWindow(new ToolWindow.WindowEventListener() {
+                @Override
+                public void eventEnd() {
+                    releaseCamera();
+                    showCameraView();
+                }
+            }, context, cameraParams);
+        toolWindow.showWindow();
+    }
+
+
     public CameraView(Context context) {
         this(context, null);
     }
-
 
     public CameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         setBackgroundColor(Color.BLACK);
         llog("CameraView init");
-
         cameraController = new CameraController();
+        cameraParams = new CameraParams();
+        setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                showToolWindow();
+                return false;
+            }
+        });
     }
 
     public View getShowView() {
-        switch (mode) {
-            case PREVIEWMODE_SURFACEVIEW:
-                return previewSurfaceView;
-            case PREVIEWMODE_TEXTUREVIEW:
-                return previewTextureView;
-        }
-        return null;
+        return previewTextureView;
     }
 
+    public void showCameraView() {
 
-    int vw, vh;
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        vw = w;
-        vh = h;
-    }
-
-    public void showCameraView(int width, int height, int facing) {
-        showCameraView(width, height, facing, PREVIEWMODE_SURFACEVIEW);
-    }
-
-    public void showCameraView(int width, int height, int facing, final int mode) {
-
-        this.mode = mode;
         try {
-            PREVIEW_WIDTH = width;
-            PREVIEW_HEIGHT = height;
             buffer = null;
             temp = null;
-            FACING = facing;
 
             cameraController.hasCameraDevice(context);
 
@@ -122,28 +123,27 @@ public class CameraView extends RelativeLayout {
             e.printStackTrace();
         }
 
-        switch (mode) {
-            case PREVIEWMODE_SURFACEVIEW:
-                settingSurfaceView();
-                break;
-            case PREVIEWMODE_TEXTUREVIEW:
-                settingTextureView();
-                break;
-        }
-
+        settingTextureView();
         try {
 
-            cameraController.openCamera(FACING);
+            cameraController.openCamera(cameraParams.facing);
 
-            Camera.Size prewSize = cameraController.getOptimalPreviewSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
-            if (prewSize.width != width) {
+            Camera.Size prewSize = cameraController.getOptimalPreviewSize(
+                    cameraParams.previewSize.previewWidth,
+                    cameraParams.previewSize.previewHeight
+            );
+            if (prewSize.width != cameraParams.previewSize.previewWidth || prewSize.height != cameraParams.previewSize.previewHeight) {
                 prewSize = null;
             }
             if (prewSize != null) {
 
-                cameraController.setParamPreviewSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
+                cameraController.setParamPreviewSize(
+                        cameraParams.previewSize.previewWidth,
+                        cameraParams.previewSize.previewHeight
+                );
                 try {
-                    cameraController.setDisplayOrientation(context, oritationDisplay);
+                    cameraController.setDisplayOrientation(context, cameraParams.oritationDisplay);
+                    cameraController.setParamEnd();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -156,7 +156,7 @@ public class CameraView extends RelativeLayout {
                                 frameRate = frameCount;
                                 frameCount = 0;
                                 time = System.currentTimeMillis();
-                                llog("onPreviewFrame frameRate: " + frameRate + " prew:" + mode);
+                                llog("onPreviewFrame frameRate: " + frameRate);
                             }
                             frameCount++;
                             camera.addCallbackBuffer(data);
@@ -167,14 +167,22 @@ public class CameraView extends RelativeLayout {
                         }
                     });
 
-                cameraController.setParamEnd();
             } else {
                 releaseCamera();
-                Toast.makeText(context, String.format(Locale.CHINA, "can not find preview size %d*%d", PREVIEW_WIDTH, PREVIEW_WIDTH), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, String.format(Locale.CHINA, "can not find preview size %d*%d",
+                        cameraParams.previewSize.previewWidth,
+                        cameraParams.previewSize.previewHeight), Toast.LENGTH_SHORT).show();
             }
 
+            if (previewTextureView != null)
+                previewTextureView.setConfigureTransform(
+                        cameraParams.scaleWidth ? cameraParams.previewSize.previewWidth : cameraParams.previewSize.previewHeight,
+                        cameraParams.scaleWidth ? cameraParams.previewSize.previewHeight : cameraParams.previewSize.previewWidth, cameraParams.filp);
+
+
         } catch (Exception e) {
-            Toast.makeText(context, String.format(Locale.CHINA, "open camera failed, CamreaId: %d!", FACING), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            Toast.makeText(context, String.format(Locale.CHINA, "open camera failed, CamreaId: %d! " + e.getMessage(), cameraParams.facing), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -182,40 +190,33 @@ public class CameraView extends RelativeLayout {
     int frameRate = 0;
     long time = 0;
 
-
-    private void settingSurfaceView() {
-        if (getChildCount() != 0) removeAllViews();
-        addCallback();
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        previewSurfaceView = new PreviewSurfaceView(context, cameraController);
-        addView(previewSurfaceView, params);
-
-        if (drawView != null) {
-            params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            addView(drawView, params);
-        }
-    }
-
     private void settingTextureView() {
         if (getChildCount() != 0) removeAllViews();
         addCallback();
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        previewTextureView = new PreviewTextureView(context, cameraController, PREVIEW_WIDTH, PREVIEW_HEIGHT);
+        previewTextureView = new PreviewTextureView(context, cameraController,
+                cameraParams.previewSize.previewWidth,
+                cameraParams.previewSize.previewHeight);
         addView(previewTextureView, params);
 
         if (drawView != null) {
             params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             addView(drawView, params);
         }
+
     }
 
     private void addCallback() {
 
         if (previewFrameCallback != null) {
             if (buffer == null)
-                buffer = new byte[PREVIEW_WIDTH * PREVIEW_HEIGHT * 2];
+                buffer = new byte[
+                        cameraParams.previewSize.previewWidth *
+                                cameraParams.previewSize.previewHeight * 2];
             if (temp == null)
-                temp = new byte[PREVIEW_WIDTH * PREVIEW_HEIGHT * 2];
+                temp = new byte[
+                        cameraParams.previewSize.previewWidth *
+                                cameraParams.previewSize.previewHeight * 2];
 
             handlerMain = new Handler(Looper.getMainLooper()) {
                 @Override
@@ -309,10 +310,6 @@ public class CameraView extends RelativeLayout {
         void analyseDataEnd(Object t);
     }
 
-    public void setOritationDisplay(int oritationDisplay) {
-        this.oritationDisplay = oritationDisplay;
-    }
-
     boolean debug = true;
 
     private void llog(String msg) {
@@ -324,4 +321,11 @@ public class CameraView extends RelativeLayout {
         return cameraController.hasCameraFacing(facing);
     }
 
+    public float getScale() {
+        if (getShowView() instanceof PreviewTextureView) {
+            return ((PreviewTextureView) getShowView()).getScale();
+        }
+        System.out.println("Only PreviewTextureView can invoke getScale！！");
+        return 1;
+    }
 }

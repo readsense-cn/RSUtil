@@ -5,7 +5,8 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
-import cn.sense.icount.github.R;
+import cn.readsense.module.R;
+
 
 /**
  * 播放短音(5.0+)
