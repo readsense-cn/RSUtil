@@ -1,7 +1,6 @@
 ## Android 工具类整理
 
 ### 最新版本1.2.2
-
 添加依赖
 ```
 allprojects {
@@ -12,7 +11,23 @@ allprojects {
 implementation 'com.github.readsense-cn:RSUtil:1.2.2'
 ```
 
-20200408:更新日志
+20200408：精简应用端camera代码
+一键应用
+```
+class MainActivity : BaseCoreActivity() {
+    override fun getLayoutId(): Int {
+        requestPermissions(Manifest.permission.CAMERA)//声明权限
+        return R.layout.activity_main;//声明布局文件
+    }
+
+    override fun initView() {
+        cameraview.showToast("长按可弹出配置页");
+        addLifecycleObserver(cameraview)//注册camera生命周期
+    }
+}
+```
+
+20200408:
 1. 移除SurfaceView预览
 2. 新增CameraParams用于管理摄像头参数
 3. 长按view，调出配置参数页面
