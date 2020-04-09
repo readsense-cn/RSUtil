@@ -1,6 +1,6 @@
 ## Android 工具类整理
 
-### 最新版本1.2.2
+### 最新版本1.3.0
 添加依赖
 ```
 allprojects {
@@ -8,7 +8,7 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
-implementation 'com.github.readsense-cn:RSUtil:1.2.2'
+implementation 'com.github.readsense-cn:RSUtil:1.3.0'
 ```
 
 20200408：精简应用端camera代码
