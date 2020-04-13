@@ -297,7 +297,6 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
     }
 
     private void removeDataCallback() {
-        this.previewFrameCallback = null;
         cameraController.removePreviewCallbackWithBuffer();
     }
 
@@ -333,4 +332,51 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
         System.out.println("Only PreviewTextureView can invoke getScale！！");
         return 1;
     }
+
+    public float getDrawPositionX(float in, float w, boolean flip_x) {
+        if (flip_x) {
+            if (cameraParams.oritationDisplay % 180 == 0) {
+                in = cameraParams.previewSize.previewWidth - in - w;
+                in -= cameraParams.previewSize.previewWidth >> 1;
+            } else {
+                in = cameraParams.previewSize.previewHeight - in - w;
+                in -= cameraParams.previewSize.previewHeight >> 1;
+            }
+        } else {
+            if (cameraParams.oritationDisplay % 180 == 0) {
+                in -= cameraParams.previewSize.previewWidth >> 1;
+            } else {
+                in -= cameraParams.previewSize.previewHeight >> 1;
+            }
+        }
+
+        in *= getScale();
+        in += previewTextureView.vw >> 1;
+        return in;
+    }
+
+    public float getDrawPositionY(float in, float h, boolean flip_y) {
+        if (flip_y) {
+            if (cameraParams.oritationDisplay % 180 == 0) {
+                in = cameraParams.previewSize.previewHeight - in - h;
+                in -= cameraParams.previewSize.previewHeight >> 1;
+            } else {
+                in = cameraParams.previewSize.previewWidth - in - h;
+                in -= cameraParams.previewSize.previewWidth >> 1;
+            }
+        } else {
+            if (cameraParams.oritationDisplay % 180 == 0) {
+                in -= cameraParams.previewSize.previewHeight >> 1;
+            } else {
+                in -= cameraParams.previewSize.previewWidth >> 1;
+            }
+        }
+
+        in *= getScale();
+        in += previewTextureView.vh >> 1;
+
+        return in;
+    }
+
+
 }

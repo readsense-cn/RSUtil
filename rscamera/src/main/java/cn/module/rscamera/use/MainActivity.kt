@@ -13,8 +13,7 @@ class MainActivity : BaseCoreActivity() {
     }
 
     override fun initView() {
-        cameraview.showToast("长按可弹出配置页");
+        cameraview.showToast("长按可弹出配置页")
         addLifecycleObserver(cameraview)
     }
-
 }
