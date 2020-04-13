@@ -1,6 +1,6 @@
 ## Android 工具类整理
 
-### 最新版本1.3.0
+### 最新版本
 添加依赖
 ```
 allprojects {
@@ -12,7 +12,9 @@ implementation 'com.github.readsense-cn:RSUtil:1.4.0'
 ```
 20200413: 增加坐标系转换接口，并归一化绘制坐标
 将预览坐标系下的坐标转换至实际view坐标系下
+
 ![WechatIMG2.jpg](https://i.loli.net/2020/04/13/tXzbhiJ3pH6m4Bw.jpg)
+
 ```
 cameraView.getDrawPositionX(float in, float w, boolean flip_x);
 cameraView.getDrawPositionY(float in, float w, boolean flip_x);
