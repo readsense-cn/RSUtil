@@ -8,7 +8,13 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
-implementation 'com.github.readsense-cn:RSUtil:1.3.0'
+implementation 'com.github.readsense-cn:RSUtil:1.4.0'
+```
+20200413: 增加坐标系转换接口，并归一化绘制坐标
+将预览坐标系下的坐标转换至实际view坐标系下
+```
+cameraView.getDrawPositionX(float in, float w, boolean flip_x);
+cameraView.getDrawPositionY(float in, float w, boolean flip_x);
 ```
 
 20200408：精简应用端camera代码
