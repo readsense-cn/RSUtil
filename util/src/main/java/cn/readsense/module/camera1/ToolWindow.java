@@ -38,10 +38,10 @@ class ToolWindow implements RadioGroup.OnCheckedChangeListener {
         AlertDialog dialog = builder.show();
         dialog.setCanceledOnTouchOutside(false);
 
-        int index = cameraParams.facing == 0 ? R.id.facing_0 : R.id.facing_1;
+        int index = cameraParams.getFacing() == 0 ? R.id.facing_0 : R.id.facing_1;
         checkRadioGroup((RadioGroup) dialog.findViewById(R.id.config_select_facing), index);
 
-        switch (cameraParams.oritationDisplay) {
+        switch (cameraParams.getOritationDisplay()) {
             case 0:
                 index = R.id.angle_0;
                 break;
@@ -58,9 +58,9 @@ class ToolWindow implements RadioGroup.OnCheckedChangeListener {
                 index = 0;
         }
         checkRadioGroup((RadioGroup) dialog.findViewById(R.id.rg_angle), index);
-        index = cameraParams.filp ? R.id.flip_1 : R.id.flip_0;
+        index = cameraParams.isFilp() ? R.id.flip_1 : R.id.flip_0;
         checkRadioGroup((RadioGroup) dialog.findViewById(R.id.flip_), index);
-        index = cameraParams.scaleWidth ? R.id.scale_1 : R.id.scale_0;
+        index = cameraParams.isScaleWidth() ? R.id.scale_1 : R.id.scale_0;
         checkRadioGroup((RadioGroup) dialog.findViewById(R.id.scale_), index);
 
     }
@@ -74,25 +74,25 @@ class ToolWindow implements RadioGroup.OnCheckedChangeListener {
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         if (checkedId == R.id.facing_0) {
-            cameraParams.facing = Camera.CameraInfo.CAMERA_FACING_BACK;
+            cameraParams.setFacing(Camera.CameraInfo.CAMERA_FACING_BACK);
         } else if (checkedId == R.id.facing_1) {
-            cameraParams.facing = Camera.CameraInfo.CAMERA_FACING_FRONT;
+            cameraParams.setFacing(Camera.CameraInfo.CAMERA_FACING_FRONT);
         } else if (checkedId == R.id.angle_0) {
-            cameraParams.oritationDisplay = 0;
+            cameraParams.setOritationDisplay(0);
         } else if (checkedId == R.id.angle_90) {
-            cameraParams.oritationDisplay = 90;
+            cameraParams.setOritationDisplay(90);
         } else if (checkedId == R.id.angle_180) {
-            cameraParams.oritationDisplay = 180;
+            cameraParams.setOritationDisplay(180);
         } else if (checkedId == R.id.angle_270) {
-            cameraParams.oritationDisplay = 270;
+            cameraParams.setOritationDisplay(270);
         } else if (checkedId == R.id.flip_1) {
-            cameraParams.filp = true;
+            cameraParams.setFilp(true);
         } else if (checkedId == R.id.flip_0) {
-            cameraParams.filp = false;
+            cameraParams.setFilp(false);
         } else if (checkedId == R.id.scale_1) {
-            cameraParams.scaleWidth = true;
+            cameraParams.setScaleWidth(true);
         } else if (checkedId == R.id.scale_0) {
-            cameraParams.scaleWidth = false;
+            cameraParams.setScaleWidth(false);
         }
     }
 

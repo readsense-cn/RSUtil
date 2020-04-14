@@ -11,13 +11,11 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -130,23 +128,23 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
         settingTextureView();
         try {
 
-            cameraController.openCamera(cameraParams.facing);
+            cameraController.openCamera(cameraParams.getFacing());
 
             Camera.Size prewSize = cameraController.getOptimalPreviewSize(
-                    cameraParams.previewSize.previewWidth,
-                    cameraParams.previewSize.previewHeight
+                    cameraParams.getPreviewSize().getPreviewWidth(),
+                    cameraParams.getPreviewSize().getPreviewHeight()
             );
-            if (prewSize.width != cameraParams.previewSize.previewWidth || prewSize.height != cameraParams.previewSize.previewHeight) {
+            if (prewSize.width != cameraParams.getPreviewSize().getPreviewWidth() || prewSize.height != cameraParams.getPreviewSize().getPreviewHeight()) {
                 prewSize = null;
             }
             if (prewSize != null) {
 
                 cameraController.setParamPreviewSize(
-                        cameraParams.previewSize.previewWidth,
-                        cameraParams.previewSize.previewHeight
+                        cameraParams.getPreviewSize().getPreviewWidth(),
+                        cameraParams.getPreviewSize().getPreviewHeight()
                 );
                 try {
-                    cameraController.setDisplayOrientation(context, cameraParams.oritationDisplay);
+                    cameraController.setDisplayOrientation(context, cameraParams.getOritationDisplay());
                     cameraController.setParamEnd();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -174,19 +172,19 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
             } else {
                 releaseCamera();
                 Toast.makeText(context, String.format(Locale.CHINA, "can not find preview size %d*%d",
-                        cameraParams.previewSize.previewWidth,
-                        cameraParams.previewSize.previewHeight), Toast.LENGTH_SHORT).show();
+                        cameraParams.getPreviewSize().getPreviewWidth(),
+                        cameraParams.getPreviewSize().getPreviewHeight()), Toast.LENGTH_SHORT).show();
             }
 
             if (previewTextureView != null)
                 previewTextureView.setConfigureTransform(
-                        cameraParams.scaleWidth ? cameraParams.previewSize.previewWidth : cameraParams.previewSize.previewHeight,
-                        cameraParams.scaleWidth ? cameraParams.previewSize.previewHeight : cameraParams.previewSize.previewWidth, cameraParams.filp);
+                        cameraParams.isScaleWidth() ? cameraParams.getPreviewSize().getPreviewWidth() : cameraParams.getPreviewSize().getPreviewHeight(),
+                        cameraParams.isScaleWidth() ? cameraParams.getPreviewSize().getPreviewHeight() : cameraParams.getPreviewSize().getPreviewWidth(), cameraParams.isFilp());
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(context, String.format(Locale.CHINA, "open camera failed, CamreaId: %d! " + e.getMessage(), cameraParams.facing), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, String.format(Locale.CHINA, "open camera failed, CamreaId: %d! " + e.getMessage(), cameraParams.getFacing()), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -199,8 +197,8 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
         addCallback();
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         previewTextureView = new PreviewTextureView(context, cameraController,
-                cameraParams.previewSize.previewWidth,
-                cameraParams.previewSize.previewHeight);
+                cameraParams.getPreviewSize().getPreviewWidth(),
+                cameraParams.getPreviewSize().getPreviewHeight());
         addView(previewTextureView, params);
 
         if (drawView != null) {
@@ -215,12 +213,12 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
         if (previewFrameCallback != null) {
             if (buffer == null)
                 buffer = new byte[
-                        cameraParams.previewSize.previewWidth *
-                                cameraParams.previewSize.previewHeight * 2];
+                        cameraParams.getPreviewSize().getPreviewWidth() *
+                                cameraParams.getPreviewSize().getPreviewHeight() * 2];
             if (temp == null)
                 temp = new byte[
-                        cameraParams.previewSize.previewWidth *
-                                cameraParams.previewSize.previewHeight * 2];
+                        cameraParams.getPreviewSize().getPreviewWidth() *
+                                cameraParams.getPreviewSize().getPreviewHeight() * 2];
 
             handlerMain = new Handler(Looper.getMainLooper()) {
                 @Override
@@ -335,18 +333,18 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
 
     public float getDrawPositionX(float in, float w, boolean flip_x) {
         if (flip_x) {
-            if (cameraParams.oritationDisplay % 180 == 0) {
-                in = cameraParams.previewSize.previewWidth - in - w;
-                in -= cameraParams.previewSize.previewWidth >> 1;
+            if (cameraParams.getOritationDisplay() % 180 == 0) {
+                in = cameraParams.getPreviewSize().getPreviewWidth() - in - w;
+                in -= cameraParams.getPreviewSize().getPreviewWidth() >> 1;
             } else {
-                in = cameraParams.previewSize.previewHeight - in - w;
-                in -= cameraParams.previewSize.previewHeight >> 1;
+                in = cameraParams.getPreviewSize().getPreviewHeight() - in - w;
+                in -= cameraParams.getPreviewSize().getPreviewHeight() >> 1;
             }
         } else {
-            if (cameraParams.oritationDisplay % 180 == 0) {
-                in -= cameraParams.previewSize.previewWidth >> 1;
+            if (cameraParams.getOritationDisplay() % 180 == 0) {
+                in -= cameraParams.getPreviewSize().getPreviewWidth() >> 1;
             } else {
-                in -= cameraParams.previewSize.previewHeight >> 1;
+                in -= cameraParams.getPreviewSize().getPreviewHeight() >> 1;
             }
         }
 
@@ -357,18 +355,18 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
 
     public float getDrawPositionY(float in, float h, boolean flip_y) {
         if (flip_y) {
-            if (cameraParams.oritationDisplay % 180 == 0) {
-                in = cameraParams.previewSize.previewHeight - in - h;
-                in -= cameraParams.previewSize.previewHeight >> 1;
+            if (cameraParams.getOritationDisplay() % 180 == 0) {
+                in = cameraParams.getPreviewSize().getPreviewHeight() - in - h;
+                in -= cameraParams.getPreviewSize().getPreviewHeight() >> 1;
             } else {
-                in = cameraParams.previewSize.previewWidth - in - h;
-                in -= cameraParams.previewSize.previewWidth >> 1;
+                in = cameraParams.getPreviewSize().getPreviewWidth() - in - h;
+                in -= cameraParams.getPreviewSize().getPreviewWidth() >> 1;
             }
         } else {
-            if (cameraParams.oritationDisplay % 180 == 0) {
-                in -= cameraParams.previewSize.previewHeight >> 1;
+            if (cameraParams.getOritationDisplay() % 180 == 0) {
+                in -= cameraParams.getPreviewSize().getPreviewHeight() >> 1;
             } else {
-                in -= cameraParams.previewSize.previewWidth >> 1;
+                in -= cameraParams.getPreviewSize().getPreviewWidth() >> 1;
             }
         }
 
