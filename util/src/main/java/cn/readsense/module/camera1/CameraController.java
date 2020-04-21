@@ -168,17 +168,17 @@ public class CameraController implements ICameraController {
         return result;
     }
 
-    public boolean hasCameraDevice(Context ctx) {
+    public boolean hasCameraDevice(Context ctx) throws Exception {
         // Check if device policy has disabled the camera.
 
         DevicePolicyManager dpm = (DevicePolicyManager) ctx.getSystemService(Context.DEVICE_POLICY_SERVICE);
         final boolean hasSystemFeature = ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
         if (dpm.getCameraDisabled(null) || !hasSystemFeature) {
-            throw new Error(String.format("Found No Camera Feature"));
+            throw new Exception(String.format("Found No Camera Feature"));
         }
         int numberOfCameras = Camera.getNumberOfCameras();
         if (numberOfCameras == 0) {
-            throw new Error(String.format("Found NoCameraException"));
+            throw new Exception(String.format("Found NoCameraException"));
         }
 
         return true;

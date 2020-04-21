@@ -34,7 +34,7 @@ public interface ICameraController {
 
     void releaseCamera();
 
-    boolean hasCameraDevice(Context ctx);
+    boolean hasCameraDevice(Context ctx) throws Exception;
 
     boolean hasCameraFacing(int facing);
 
