@@ -139,30 +139,34 @@ public class CameraController implements ICameraController {
 
 
     private int getCameraDisplayOrientation(Context context, int cameraId) {
-        Camera.CameraInfo info = new Camera.CameraInfo();
-        Camera.getCameraInfo(cameraId, info);
-        int rotation = ((Activity) context).getWindowManager().getDefaultDisplay().getRotation();
-        short degrees = 0;
-        switch (rotation) {
-            case 0:
-                degrees = 0;
-                break;
-            case 1:
-                degrees = 90;
-                break;
-            case 2:
-                degrees = 180;
-                break;
-            case 3:
-                degrees = 270;
-        }
+        int result = 0;
+        try {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(cameraId, info);
+            int rotation = ((Activity) context).getWindowManager().getDefaultDisplay().getRotation();
+            short degrees = 0;
+            switch (rotation) {
+                case 0:
+                    degrees = 0;
+                    break;
+                case 1:
+                    degrees = 90;
+                    break;
+                case 2:
+                    degrees = 180;
+                    break;
+                case 3:
+                    degrees = 270;
+            }
 
-        int result;
-        if (info.facing == 1) {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;
-        } else {
-            result = (info.orientation - degrees + 360) % 360;
+            if (info.facing == 1) {
+                result = (info.orientation + degrees) % 360;
+                result = (360 - result) % 360;
+            } else {
+                result = (info.orientation - degrees + 360) % 360;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return result;
