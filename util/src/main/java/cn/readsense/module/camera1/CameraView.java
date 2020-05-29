@@ -214,11 +214,11 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
             if (buffer == null)
                 buffer = new byte[
                         cameraParams.getPreviewSize().getPreviewWidth() *
-                                cameraParams.getPreviewSize().getPreviewHeight() * 2];
+                                cameraParams.getPreviewSize().getPreviewHeight() * 3 / 2];
             if (temp == null)
                 temp = new byte[
                         cameraParams.getPreviewSize().getPreviewWidth() *
-                                cameraParams.getPreviewSize().getPreviewHeight() * 2];
+                                cameraParams.getPreviewSize().getPreviewHeight() * 3 / 2];
 
             handlerMain = new Handler(Looper.getMainLooper()) {
                 @Override

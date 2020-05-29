@@ -1,2 +1,3 @@
 include ':rscamera', ':util'
-rootProject.name='RSUtil'
+//rootProject.name='RSUtil'
+include ':idurecycleview'

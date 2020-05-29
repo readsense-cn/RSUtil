@@ -8,7 +8,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 29
         versionCode 1
-        versionName "1.4.0"
+        versionName "1.4.6"
 
     }
 
@@ -31,13 +31,7 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-//    implementation rootProject.ext.dependency["appcompat-v7"]
-//    implementation rootProject.ext.dependency["retrofit"]
-//    implementation rootProject.ext.dependency["converter-gson"]
-//    implementation rootProject.ext.dependency["retrofit2-adapter-rxjava2"]
-//    implementation rootProject.ext.dependency["rxandroid"]
-//    implementation rootProject.ext.dependency["butterknife"]
-//    annotationProcessor rootProject.ext.dependency["butterknife-compiler"]
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
 
 }
 repositories {

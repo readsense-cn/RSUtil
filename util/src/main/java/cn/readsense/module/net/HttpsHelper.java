@@ -26,7 +26,7 @@ import javax.net.ssl.X509TrustManager;
  * Created by dou on 2017/6/30.
  */
 
-public class HttpsUtils {
+public class HttpsHelper {
 
     public static SSLSocketFactory getSslSocketFactory(InputStream[] certificates, InputStream bksFile, String password) {
         try {
