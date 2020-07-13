@@ -12,7 +12,7 @@ import cn.readsense.module.util.HandleUtil;
 
 public class ImageLoader {
     private static final ImageLoader ourInstance = new ImageLoader();
-    private static ExecutorService executorService;
+    private static final ExecutorService executorService;
 
     private LruCache<String, Bitmap> mImageCache;
 

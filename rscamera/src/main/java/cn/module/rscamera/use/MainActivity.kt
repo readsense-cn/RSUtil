@@ -10,24 +10,26 @@ class MainActivity : BaseCoreActivity() {
 
     override fun getLayoutId(): Int {
         requestPermissions(Manifest.permission.CAMERA)
-        return R.layout.activity_main;
+        return R.layout.activity_main
     }
 
     override fun initView() {
-        cameraview.showToast("长按可弹出配置页")
+        cameraView.showToast("长按可弹出配置页")
 
-        cameraview.addPreviewFrameCallback(object : CameraView.PreviewFrameCallback {
+        cameraView.cameraParams.previewSize.previewWidth = 1920
+        cameraView.cameraParams.previewSize.previewHeight = 1080
+        cameraView.addPreviewFrameCallback(object : CameraView.PreviewFrameCallback {
 
             override fun analyseDataEnd(t: Any?) {
 
             }
 
             override fun analyseData(data: ByteArray?): Any? {
-
+                Thread.sleep(20)
                 return null
             }
 
         })
-        addLifecycleObserver(cameraview)
+        addLifecycleObserver(cameraView)
     }
 }

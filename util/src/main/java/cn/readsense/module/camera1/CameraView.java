@@ -31,6 +31,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
     private static final String TAG = "CameraView";
     private static final int MAIN_RET = 0x101;
     private static final int THREAD_RET = 0x102;
+    private static final int THREAD_OPENCAMERA = 0x103;
 
     private Context context;
     private CameraParams cameraParams;
@@ -117,18 +118,26 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
 
         try {
             buffer = null;
-            temp = null;
+//            temp = null;
 
             cameraController.hasCameraDevice(context);
-
+//            initCamera();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         settingTextureView();
+
+    }
+
+    int frameCount = 0;
+    int frameRate = 0;
+    long time = 0;
+
+    private void initCamera() {
+        llog("initCamera thread:" + Thread.currentThread().getId());
+        cameraController.openCamera(cameraParams.getFacing());
         try {
 
-            cameraController.openCamera(cameraParams.getFacing());
 
             Camera.Size prewSize = cameraController.getOptimalPreviewSize(
                     cameraParams.getPreviewSize().getPreviewWidth(),
@@ -158,13 +167,21 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
                                 frameRate = frameCount;
                                 frameCount = 0;
                                 time = System.currentTimeMillis();
-                                llog("onPreviewFrame frameRate: " + frameRate);
+                                llog("onPreviewFrame frameRate: " + frameRate + " " + Thread.currentThread().getId());
                             }
                             frameCount++;
                             camera.addCallbackBuffer(data);
+
+
                             synchronized (Lock) {
                                 System.arraycopy(data, 0, buffer, 0, data.length);
                                 isBufferready = true;
+                                handler.sendEmptyMessage(THREAD_RET);
+//                                Object o = previewFrameCallback.analyseData(buffer);
+//                                Message msg1 = new Message();
+//                                msg1.what = MAIN_RET;
+//                                msg1.obj = o;
+//                                handlerMain.sendMessage(msg1);
                             }
                         }
                     });
@@ -176,11 +193,6 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
                         cameraParams.getPreviewSize().getPreviewHeight()), Toast.LENGTH_SHORT).show();
             }
 
-            if (previewTextureView != null)
-                previewTextureView.setConfigureTransform(
-                        cameraParams.isScaleWidth() ? cameraParams.getPreviewSize().getPreviewWidth() : cameraParams.getPreviewSize().getPreviewHeight(),
-                        cameraParams.isScaleWidth() ? cameraParams.getPreviewSize().getPreviewHeight() : cameraParams.getPreviewSize().getPreviewWidth(), cameraParams.isFilp());
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,23 +200,30 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
         }
     }
 
-    int frameCount = 0;
-    int frameRate = 0;
-    long time = 0;
-
     private void settingTextureView() {
         if (getChildCount() != 0) removeAllViews();
         addCallback();
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        previewTextureView = new PreviewTextureView(context, cameraController,
-                cameraParams.getPreviewSize().getPreviewWidth(),
-                cameraParams.getPreviewSize().getPreviewHeight());
-        addView(previewTextureView, params);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                previewTextureView = new PreviewTextureView(context, cameraController,
+                        cameraParams.getPreviewSize().getPreviewWidth(),
+                        cameraParams.getPreviewSize().getPreviewHeight());
+                addView(previewTextureView, params);
 
-        if (drawView != null) {
-            params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            addView(drawView, params);
-        }
+                if (drawView != null) {
+                    params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                    addView(drawView, params);
+                }
+
+                if (previewTextureView != null)
+                    previewTextureView.setConfigureTransform(
+                            cameraParams.isScaleWidth() ? cameraParams.getPreviewSize().getPreviewWidth() : cameraParams.getPreviewSize().getPreviewHeight(),
+                            cameraParams.isScaleWidth() ? cameraParams.getPreviewSize().getPreviewHeight() : cameraParams.getPreviewSize().getPreviewWidth(), cameraParams.isFilp());
+
+            }
+        }, 300);
 
     }
 
@@ -235,41 +254,52 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
             handlerThread = new HandlerThread("camera-thread-" + System.currentTimeMillis());
             //开启一个线程
             handlerThread.start();
-            is_thread_run = true;
+//            is_thread_run = true;
             //在这个线程中创建一个handler对象
             handler = new Handler(handlerThread.getLooper()) {
                 @Override
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
-                    if (msg.what == THREAD_RET) {
-                        //这个方法是运行在 handler-thread 线程中的 ，可以执行耗时操作
-                        while (is_thread_run) {
+                    switch (msg.what) {
+                        case THREAD_RET:
+                            //这个方法是运行在 handler-thread 线程中的 ，可以执行耗时操作
+                            while (is_thread_run) {
 
-                            if (!isBufferready) {
-                                try {
-                                    Thread.sleep(28);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                if (!isBufferready) {
+                                    try {
+                                        Thread.sleep(1);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    continue;
                                 }
-                                continue;
+                                synchronized (Lock) {
+                                    System.arraycopy(buffer, 0, temp, 0, buffer.length);
+                                    isBufferready = false;
+                                }
+                                if (previewFrameCallback != null) {
+                                    Object o = previewFrameCallback.analyseData(temp);
+                                    Message msg1 = new Message();
+                                    msg1.what = MAIN_RET;
+                                    msg1.obj = o;
+                                    handlerMain.sendMessage(msg1);
+                                }
+                                break;
                             }
-                            synchronized (Lock) {
-                                System.arraycopy(buffer, 0, temp, 0, buffer.length);
-                                isBufferready = false;
-                            }
-                            if (previewFrameCallback != null) {
-                                Object o = previewFrameCallback.analyseData(temp);
-                                Message msg1 = new Message();
-                                msg1.what = MAIN_RET;
-                                msg1.obj = o;
-                                handlerMain.sendMessage(msg1);
-                            }
-                        }
+                            break;
+                        case THREAD_OPENCAMERA:
+
+
+                            break;
                     }
+
                 }
             };
-            handler.sendEmptyMessage(THREAD_RET);
-
+            handler.sendEmptyMessage(THREAD_OPENCAMERA);
+            initCamera();
+//            handler.sendEmptyMessageDelayed(THREAD_RET, 1000);
+        } else {
+            initCamera();
         }
 
 
@@ -277,7 +307,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     public void releaseCamera() {
-        is_thread_run = false;
+//        is_thread_run = false;
 
         if (cameraController != null) {
             removeDataCallback();
@@ -315,7 +345,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
     boolean debug = true;
 
     private void llog(String msg) {
-        if (!debug)
+        if (debug)
             Log.d(TAG, msg);
     }
 
