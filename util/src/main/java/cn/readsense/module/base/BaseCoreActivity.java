@@ -15,17 +15,19 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cn.readsense.module.basemvp.BasePresenter;
+import cn.readsense.module.basemvp.BaseView;
 import cn.readsense.module.permissions.PermissionListener;
 import cn.readsense.module.permissions.PermissionsUtil;
-import cn.readsense.module.util.DLog;
 import cn.readsense.module.util.DisplayUtil;
 import cn.readsense.module.util.ToastUtils;
 
 
-public abstract class BaseCoreActivity extends AppCompatActivity {
+public abstract class BaseCoreActivity extends AppCompatActivity implements BaseView {
     public ProgressDialog progressDialog;
     Unbinder unbinder;
     public Context context;
+    public BasePresenter presenter;
 
     int screenWidth, screenHeight;
     private String permissions[];
@@ -77,6 +79,10 @@ public abstract class BaseCoreActivity extends AppCompatActivity {
 
     private void registerViewAndObserve() {
         initView();
+        presenter = initPresenter();
+        if (presenter != null) {
+            addLifecycleObserver(presenter);
+        }
         if (lifecycleObservers != null && lifecycleObservers.size() > 0) {
             for (LifecycleObserver observer : lifecycleObservers) {
                 getLifecycle().addObserver(observer);
@@ -130,6 +136,11 @@ public abstract class BaseCoreActivity extends AppCompatActivity {
     protected abstract int getLayoutId();
 
     protected abstract void initView();
+
+
+    protected BasePresenter initPresenter() {
+        return null;
+    }
 
 
     /**
