@@ -1,10 +1,15 @@
 package cn.module.rscamera.use
 
 import android.Manifest
+import android.util.Size
+import android.view.Surface
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.core.content.ContextCompat
 import cn.readsense.module.base.BaseCoreActivity
-import cn.readsense.module.camera1.CameraView
-import com.example.android.basicpermissions.util.showToast
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseCoreActivity() {
 
@@ -14,22 +19,38 @@ class MainActivity : BaseCoreActivity() {
     }
 
     override fun initView() {
-        cameraView.showToast("长按可弹出配置页")
 
-        cameraView.cameraParams.previewSize.previewWidth = 1920
-        cameraView.cameraParams.previewSize.previewHeight = 1080
-        cameraView.addPreviewFrameCallback(object : CameraView.PreviewFrameCallback {
 
-            override fun analyseDataEnd(t: Any?) {
+        val viewFinder: PreviewView = findViewById(R.id.previewView)
 
+        val cameraProviderFeature = ProcessCameraProvider.getInstance(context)
+
+        cameraProviderFeature.addListener(Runnable {
+
+            val cameraProvider = ProcessCameraProvider.getInstance(context).get()
+            val preview = Preview.Builder().apply {
+                setTargetResolution(Size(640, 480))
+                setTargetRotation(Surface.ROTATION_180)
+            }.build().apply {
+                setSurfaceProvider(viewFinder.createSurfaceProvider())
             }
 
-            override fun analyseData(data: ByteArray?): Any? {
-                Thread.sleep(20)
-                return null
-            }
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .apply {
 
-        })
-        addLifecycleObserver(cameraView)
+                }.build().apply {
+                    setAnalyzer(
+                        ContextCompat.getMainExecutor(context),
+                        LuminosityAnalyzer()
+                    )
+                }
+
+            cameraProvider.unbindAll()
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer)
+
+        }, ContextCompat.getMainExecutor(context))
+
+
     }
 }

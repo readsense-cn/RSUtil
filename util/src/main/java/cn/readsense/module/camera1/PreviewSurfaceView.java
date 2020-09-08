@@ -13,14 +13,13 @@ public class PreviewSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
 
     private SurfaceHolder mSurfaceHolder;
-    CameraController cameraController;
+    Camera1Controller cameraController;
 
-    public PreviewSurfaceView(Context context, CameraController cameraController) {
+    public PreviewSurfaceView(Context context, Camera1Controller cameraController) {
         super(context);
         mSurfaceHolder = getHolder();
         this.cameraController = cameraController;
         mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);//translucent半透明 transparent透明
-        mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mSurfaceHolder.addCallback(this);
     }
 

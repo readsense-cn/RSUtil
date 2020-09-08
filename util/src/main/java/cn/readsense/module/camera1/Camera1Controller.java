@@ -18,9 +18,9 @@ import java.util.List;
  * Created by dou on 2017/11/6.
  */
 
-public class CameraController implements ICameraController {
+public class Camera1Controller implements ICameraController {
 
-    private static final String TAG = "CameraController";
+    private static final String TAG = "Camera1Controller";
 
     private Camera camera = null;
     private Camera.Parameters parameters;
@@ -29,9 +29,8 @@ public class CameraController implements ICameraController {
     private int facing;
 
     private boolean isWithBufferCallback = false;//是否使用了带缓冲区的回调
-    private boolean isWithCallback = false;//是否使用了带缓冲区的回调
 
-    public CameraController() {
+    public Camera1Controller() {
     }
 
     public void openCamera(int cameraFacing) {
@@ -67,10 +66,6 @@ public class CameraController implements ICameraController {
             camera.setDisplayOrientation(result);
     }
 
-    public void setDisplayOrientation(Context context) {
-        setDisplayOrientation(context, -1);
-    }
-
     public void setPreviewDisplay(SurfaceHolder holder) {
         try {
             if (camera != null)
@@ -89,23 +84,14 @@ public class CameraController implements ICameraController {
         }
     }
 
+
     public void addPreviewCallback(Camera.PreviewCallback callback) {
-        isWithCallback = true;
-        camera.setPreviewCallback(callback);
-    }
-
-    public void removePreviewCallback() {
-        isWithCallback = false;
-        camera.setPreviewCallback(null);
-    }
-
-    public void addPreviewCallbackWithBuffer(Camera.PreviewCallback callback) {
         isWithBufferCallback = true;
         camera.addCallbackBuffer(new byte[preview_width * preview_height * ImageFormat.getBitsPerPixel(ImageFormat.NV21) / 8]);
         camera.setPreviewCallbackWithBuffer(callback);
     }
 
-    public void removePreviewCallbackWithBuffer() {
+    public void removePreviewCallback() {
         if (camera != null) {
             isWithBufferCallback = false;
             camera.setPreviewCallbackWithBuffer(null);
@@ -121,10 +107,7 @@ public class CameraController implements ICameraController {
 
     public void stopPreview() {
         if (camera != null) {
-            if (isWithBufferCallback)
-                removePreviewCallbackWithBuffer();
-            if (isWithCallback)
-                removePreviewCallback();
+            this.removePreviewCallback();
             camera.stopPreview();
         }
     }
@@ -201,19 +184,6 @@ public class CameraController implements ICameraController {
     }
 
     @Override
-    public boolean hasSupportSize(int width, int height) {
-        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
-        for (int i = 0; i < previewSizes.size(); i++) {
-            Camera.Size size = previewSizes.get(i);
-            Log.i(TAG, "previewSizes:width = " + size.width + " height = " + size.height);
-            if (size.width == width && size.height == height) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public Camera.Size getOptimalPreviewSize(int width, int height) {
         Camera.Size optimalSize = null;
         double minHeightDiff = Double.MAX_VALUE;
@@ -258,7 +228,6 @@ public class CameraController implements ICameraController {
         }
     }
 
-
     public int getPreview_width() {
         return preview_width;
     }
@@ -269,10 +238,5 @@ public class CameraController implements ICameraController {
 
     public int getFacing() {
         return facing;
-    }
-
-    public void setExposureCompensation(int value) {
-        parameters.setExposureCompensation(value);
-        camera.setParameters(parameters);
     }
 }

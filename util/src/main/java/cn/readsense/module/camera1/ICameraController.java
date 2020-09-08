@@ -1,12 +1,12 @@
 package cn.readsense.module.camera1;
 
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 
 
 public interface ICameraController {
-
 
     void openCamera(int cameraFacing);
 
@@ -16,17 +16,13 @@ public interface ICameraController {
 
     void setDisplayOrientation(Context context, int result);
 
-    void setDisplayOrientation(Context context);
-
     void setPreviewDisplay(SurfaceHolder holder);
+
+    void setPreviewTexture(SurfaceTexture holder);
 
     void addPreviewCallback(Camera.PreviewCallback callback);
 
     void removePreviewCallback();
-
-    void addPreviewCallbackWithBuffer(Camera.PreviewCallback callback);
-
-    void removePreviewCallbackWithBuffer();
 
     void startPreview();
 
@@ -37,8 +33,6 @@ public interface ICameraController {
     boolean hasCameraDevice(Context ctx) throws Exception;
 
     boolean hasCameraFacing(int facing);
-
-    boolean hasSupportSize(int width, int height);
 
     void printSupportPreviewSize();
 

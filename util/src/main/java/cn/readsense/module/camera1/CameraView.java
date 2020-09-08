@@ -51,7 +51,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
     private boolean is_thread_run = true;
     private final Object Lock = new Object();
     private PreviewFrameCallback previewFrameCallback;
-    CameraController cameraController;
+    ICameraController iCameraController;
 
     HandlerThread handlerThread;
     Handler handler;
@@ -98,7 +98,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
         this.context = context;
         setBackgroundColor(Color.BLACK);
         llog("CameraView init");
-        cameraController = new CameraController();
+        iCameraController = new Camera1Controller();
         cameraParams = new CameraParams();
         setOnLongClickListener(new OnLongClickListener() {
             @Override
@@ -120,7 +120,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
             buffer = null;
 //            temp = null;
 
-            cameraController.hasCameraDevice(context);
+            iCameraController.hasCameraDevice(context);
 //            initCamera();
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,11 +135,11 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
 
     private void initCamera() {
         llog("initCamera thread:" + Thread.currentThread().getId());
-        cameraController.openCamera(cameraParams.getFacing());
+        iCameraController.openCamera(cameraParams.getFacing());
         try {
 
 
-            Camera.Size prewSize = cameraController.getOptimalPreviewSize(
+            Camera.Size prewSize = iCameraController.getOptimalPreviewSize(
                     cameraParams.getPreviewSize().getPreviewWidth(),
                     cameraParams.getPreviewSize().getPreviewHeight()
             );
@@ -148,18 +148,18 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
             }
             if (prewSize != null) {
 
-                cameraController.setParamPreviewSize(
+                iCameraController.setParamPreviewSize(
                         cameraParams.getPreviewSize().getPreviewWidth(),
                         cameraParams.getPreviewSize().getPreviewHeight()
                 );
                 try {
-                    cameraController.setDisplayOrientation(context, cameraParams.getOritationDisplay());
-                    cameraController.setParamEnd();
+                    iCameraController.setDisplayOrientation(context, cameraParams.getOritationDisplay());
+                    iCameraController.setParamEnd();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 if (previewFrameCallback != null)
-                    cameraController.addPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
+                    iCameraController.addPreviewCallback(new Camera.PreviewCallback() {
                         @Override
                         public void onPreviewFrame(byte[] data, Camera camera) {//数据预览回掉
 
@@ -207,7 +207,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
             @Override
             public void run() {
                 LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-                previewTextureView = new PreviewTextureView(context, cameraController,
+                previewTextureView = new PreviewTextureView(context, iCameraController,
                         cameraParams.getPreviewSize().getPreviewWidth(),
                         cameraParams.getPreviewSize().getPreviewHeight());
                 addView(previewTextureView, params);
@@ -309,10 +309,9 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
     public void releaseCamera() {
 //        is_thread_run = false;
 
-        if (cameraController != null) {
-            removeDataCallback();
-            cameraController.stopPreview();
-            cameraController.releaseCamera();
+        if (iCameraController != null) {
+            iCameraController.stopPreview();
+            iCameraController.releaseCamera();
         }
         removeAllViews();
         if (handler != null)
@@ -324,16 +323,8 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
 
     }
 
-    private void removeDataCallback() {
-        cameraController.removePreviewCallbackWithBuffer();
-    }
-
     public void addPreviewFrameCallback(PreviewFrameCallback callback) {
         this.previewFrameCallback = callback;
-    }
-
-    public void setExposureCompensation(int limit) {
-        cameraController.setExposureCompensation(limit);
     }
 
     public interface PreviewFrameCallback {
@@ -350,7 +341,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
     }
 
     public boolean hasCameraFacing(int facing) {
-        return cameraController.hasCameraFacing(facing);
+        return iCameraController.hasCameraFacing(facing);
     }
 
     public float getScale() {

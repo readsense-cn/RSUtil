@@ -10,9 +10,8 @@ import android.view.TextureView;
 
 public class PreviewTextureView extends TextureView implements TextureView.SurfaceTextureListener {
 
-    CameraController cameraController;
+    ICameraController cameraController;
     Context context;
-    SurfaceTexture surfaceTexture;
     int buffer_width;
     int buffer_height;
     int vw;
@@ -25,7 +24,8 @@ public class PreviewTextureView extends TextureView implements TextureView.Surfa
 
     private float scale = 1f;
 
-    public PreviewTextureView(Context context, CameraController cameraController, int PREVIEW_WIDTH, int PREVIEW_HEIGHT) {
+
+    public PreviewTextureView(Context context, ICameraController cameraController, int PREVIEW_WIDTH, int PREVIEW_HEIGHT) {
         super(context);
         this.cameraController = cameraController;
         this.context = context;
@@ -36,8 +36,7 @@ public class PreviewTextureView extends TextureView implements TextureView.Surfa
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        surfaceTexture = surface;
-        cameraController.setPreviewTexture(surface);
+         cameraController.setPreviewTexture(surface);
         cameraController.startPreview();
         configureTransform(width, height);
         vw = width;
