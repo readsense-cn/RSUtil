@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -20,6 +22,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -395,6 +398,14 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
         in += previewTextureView.vh >> 1;
 
         return in;
+    }
+
+    public void startRecord(String saveFileName) {
+        iCameraController.startRecord(saveFileName);
+    }
+
+    public void stopRecord() {
+        iCameraController.stopRecord();
     }
 
 

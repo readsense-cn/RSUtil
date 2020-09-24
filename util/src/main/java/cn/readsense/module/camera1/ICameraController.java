@@ -39,4 +39,8 @@ public interface ICameraController {
     void printSupportPictureSize();
 
     Camera.Size getOptimalPreviewSize(int width, int height);
+
+    void startRecord(String saveFileName);
+
+    void stopRecord();
 }

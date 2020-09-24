@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -18,7 +20,7 @@ import java.util.List;
  * Created by dou on 2017/11/6.
  */
 
-public class Camera1Controller implements ICameraController {
+public class Camera1Controller implements ICameraController, MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
 
     private static final String TAG = "Camera1Controller";
 
@@ -29,6 +31,7 @@ public class Camera1Controller implements ICameraController {
     private int facing;
 
     private boolean isWithBufferCallback = false;//是否使用了带缓冲区的回调
+    private MediaRecorder mediaRecorder;
 
     public Camera1Controller() {
     }
@@ -77,6 +80,7 @@ public class Camera1Controller implements ICameraController {
 
     public void setPreviewTexture(SurfaceTexture mTexture) {
         try {
+
             if (camera != null)
                 camera.setPreviewTexture(mTexture);
         } catch (IOException e) {
@@ -209,6 +213,55 @@ public class Camera1Controller implements ICameraController {
     }
 
     @Override
+    public void startRecord(String saveFileName) {
+        try {
+            camera.unlock();
+            // Step 1:
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setCamera(camera);
+            mediaRecorder.setOrientationHint(0);
+            // Step 2: Set sources
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+            mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
+            if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
+                CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+                mediaRecorder.setProfile(camcorderProfile);//构造CamcorderProfile，使用高质量视频录制
+            }
+            // Step 3: Set a Camera Parameters
+//            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mediaRecorder.setVideoSize(parameters.getPreviewSize().width, parameters.getPreviewSize().height);
+            /* Encoding bit rate: 1 * 1024 * 1024*/
+//            mediaRecorder.setVideoEncodingBitRate(1 * 1024 * 1024);//清晰度
+//            mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+//            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
+            // Step 4: Set output file
+            //mediaRecorder.setMaxFileSize(maxFileSizeInBytes);/设置录制大小
+            mediaRecorder.setOutputFile(saveFileName);
+            mediaRecorder.setOnErrorListener(this);
+            mediaRecorder.setOnInfoListener(this);
+//            mediaRecorder.setVideoFrameRate(20);
+
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void stopRecord() {
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        mediaRecorder = null;
+        camera.lock();
+    }
+
+    @Override
     public void printSupportPreviewSize() {
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         for (int i = 0; i < previewSizes.size(); i++) {
@@ -238,5 +291,15 @@ public class Camera1Controller implements ICameraController {
 
     public int getFacing() {
         return facing;
+    }
+
+    @Override
+    public void onError(MediaRecorder mr, int what, int extra) {
+
+    }
+
+    @Override
+    public void onInfo(MediaRecorder mr, int what, int extra) {
+
     }
 }
