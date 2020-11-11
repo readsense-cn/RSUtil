@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CameraPreView">
+    <declare-styleable name="CameraView">
+        <!--        摄像头方向，取值0或1-->
         <attr name="facing" format="integer" />
+        <!--        预览宽度-->
         <attr name="w" format="integer" />
+        <!--        预览高度-->
         <attr name="h" format="integer" />
+        <!--        拉伸方向，解决变形问题-->
         <attr name="flipXY" format="boolean" />
+        <!--        预览方向，取值0-7-->
         <attr name="previewMode" format="integer" />
     </declare-styleable>
 </resources>

@@ -18,13 +18,13 @@ class CameraView(context: Context, attributes: AttributeSet?) :
         setRenderer(cameraRenderer)
         this.renderMode = RENDERMODE_WHEN_DIRTY
 
-        val typeArray = context.obtainStyledAttributes(attributes, R.styleable.CameraPreView)
+        val typeArray = context.obtainStyledAttributes(attributes, R.styleable.CameraView)
         val facing =
-            typeArray.getInt(R.styleable.CameraPreView_facing, Camera.CameraInfo.CAMERA_FACING_BACK)
-        val w = typeArray.getInt(R.styleable.CameraPreView_w, 640)
-        val h = typeArray.getInt(R.styleable.CameraPreView_h, 480)
-        val flipXY = typeArray.getBoolean(R.styleable.CameraPreView_flipXY, false)
-        val previewMode = typeArray.getInt(R.styleable.CameraPreView_previewMode, 0)
+            typeArray.getInt(R.styleable.CameraView_facing, Camera.CameraInfo.CAMERA_FACING_BACK)
+        val w = typeArray.getInt(R.styleable.CameraView_w, 640)
+        val h = typeArray.getInt(R.styleable.CameraView_h, 480)
+        val flipXY = typeArray.getBoolean(R.styleable.CameraView_flipXY, false)
+        val previewMode = typeArray.getInt(R.styleable.CameraView_previewMode, 0)
         typeArray.recycle()
         val params = CameraParams.Builder()
             .setFacing(facing)

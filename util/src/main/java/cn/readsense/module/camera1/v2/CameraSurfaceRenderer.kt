@@ -48,9 +48,6 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
     private var surfaceTexture: SurfaceTexture? = null
     private var viewW: Int = 0
     private var viewH: Int = 0
-    private var iw: Int = 0
-    private var ih: Int = 0
-    private var flipXY = false
 
     init {
         vertexBuffer = BufferUtils.newFloatBuffer(position_vertex)
@@ -80,12 +77,12 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
                 ) / 8
             )
         )
-        camera?.setPreviewCallbackWithBuffer(params.previewCallback)
+        camera?.setPreviewCallbackWithBuffer { data: ByteArray, camera: Camera ->
+            camera.addCallbackBuffer(data)
+            params.previewCallback?.onPreviewFrame(data, camera)
+        }
 
         camera?.startPreview()
-        iw = params.w
-        ih = params.h
-        flipXY = params.flipXY
         automaticFocusing()
     }
 
@@ -128,15 +125,15 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
 
     //根据view大小调整渲染矩阵坐标，避免拉伸图像
     private fun automaticFocusing() {
-        if (viewW == 0 || viewH == 0 || iw == 0 || ih == 0) return
+        if (viewW == 0 || viewH == 0 || params.w == 0 || params.h == 0) return
 
         //判定图像宽高是否对应iw和ih
-        var imgW = iw
-        var imgH = ih
+        var imgW = params.w
+        var imgH = params.h
 
-        if (flipXY) {
-            imgW = ih
-            imgH = iw
+        if (params.flipXY) {
+            imgW = params.h
+            imgH = params.w
         }
 
         val apex_view = viewW.toFloat() / viewH.toFloat()
@@ -172,7 +169,14 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
         GLES30.glVertexAttribPointer(0, 3, GLES30.GL_FLOAT, false, 0, vertexBuffer)
 
         GLES30.glEnableVertexAttribArray(1)
-        GLES30.glVertexAttribPointer(1, 2, GLES30.GL_FLOAT, false, 0, textureVertexBuffers[0]);
+        GLES30.glVertexAttribPointer(
+            1,
+            2,
+            GLES30.GL_FLOAT,
+            false,
+            0,
+            textureVertexBuffers[params.previewMode]
+        );
 
         // 绘制
         GLES30.glDrawElements(

@@ -7,7 +7,11 @@ class CameraParams private constructor(
     var w: Int,
     var h: Int, var flipXY: Boolean, var previewMode: Int
 ) {
-    var previewCallback: Camera.PreviewCallback? = null
+    var previewCallback: PreviewCallback? = null
+
+    interface PreviewCallback {
+        fun onPreviewFrame(data: ByteArray, camera: Camera)
+    }
 
     class Builder {
         private var facing: Int = -1
