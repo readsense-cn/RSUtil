@@ -1,6 +1,7 @@
 package cn.module.rscamera.use;
 
 import android.Manifest;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cn.readsense.module.base.BaseCoreActivity;
 import cn.readsense.module.camera1.CameraView;
+import cn.readsense.module.util.BitmapUtil;
 
 public class Camera1Activity extends BaseCoreActivity {
 
@@ -31,22 +33,22 @@ public class Camera1Activity extends BaseCoreActivity {
         cameraView.getCameraParams().setFacing(Camera.CameraInfo.CAMERA_FACING_BACK);
         cameraView.getCameraParams().setFilp(false);
         cameraView.getCameraParams().setScaleWidth(true);
-        cameraView.getCameraParams().getPreviewSize().setPreviewWidth(640);
-        cameraView.getCameraParams().getPreviewSize().setPreviewHeight(480);
+        cameraView.getCameraParams().getPreviewSize().setPreviewWidth(1920);
+        cameraView.getCameraParams().getPreviewSize().setPreviewHeight(1080);
+        cameraView.addPreviewFrameCallback(new CameraView.PreviewFrameCallback() {
+            @Override
+            public Object analyseData(byte[] data) {
+                return null;
+            }
+
+            @Override
+            public void analyseDataEnd(Object t) {
+
+            }
+        });
+//        cameraView.showCameraView();
         addLifecycleObserver(cameraView);
 
     }
 
-    @OnClick(R.id.record)
-    void luzhi(Button v) {
-
-        if (v.getText().equals("录制")) {
-            v.setText("结束");
-            cameraView.startRecord("/sdcard/" + System.currentTimeMillis() + ".mp4");
-        } else {
-            v.setText("录制");
-            cameraView.stopRecord();
-
-        }
-    }
 }

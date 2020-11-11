@@ -15,12 +15,14 @@ import android.view.SurfaceHolder;
 import java.io.IOException;
 import java.util.List;
 
+import cn.readsense.module.util.DLog;
+
 
 /**
  * Created by dou on 2017/11/6.
  */
 
-public class Camera1Controller implements ICameraController, MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
+public class Camera1Controller implements ICameraController {
 
     private static final String TAG = "Camera1Controller";
 
@@ -215,50 +217,53 @@ public class Camera1Controller implements ICameraController, MediaRecorder.OnErr
     @Override
     public void startRecord(String saveFileName) {
         try {
-            camera.unlock();
+//            camera.unlock();
             // Step 1:
             mediaRecorder = new MediaRecorder();
             mediaRecorder.setCamera(camera);
             mediaRecorder.setOrientationHint(0);
             // Step 2: Set sources
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
             mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
 
-            if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
-                CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
-                mediaRecorder.setProfile(camcorderProfile);//构造CamcorderProfile，使用高质量视频录制
-            }
+            CamcorderProfile camcorderProfile;
+
+            camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+            mediaRecorder.setProfile(camcorderProfile);//构造CamcorderProfile，使用高质量视频录制
             // Step 3: Set a Camera Parameters
-//            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mediaRecorder.setVideoSize(parameters.getPreviewSize().width, parameters.getPreviewSize().height);
-            /* Encoding bit rate: 1 * 1024 * 1024*/
-//            mediaRecorder.setVideoEncodingBitRate(1 * 1024 * 1024);//清晰度
-//            mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-//            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+//            mediaRecorder.setVideoEncodingBitRate(5 * 1024 * 1024);
+//            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);// 视频输出格式
+//            mediaRecorder.setAudioEncoder(MediaRecorder.Aud2ioEncoder.AMR_NB);// 音频格式
+//            mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);// 视频录制格式
+//            mediaRecorder.setVideoSize(parameters.getPreviewSize().width, parameters.getPreviewSize().height);
 
             // Step 4: Set output file
             //mediaRecorder.setMaxFileSize(maxFileSizeInBytes);/设置录制大小
             mediaRecorder.setOutputFile(saveFileName);
-            mediaRecorder.setOnErrorListener(this);
-            mediaRecorder.setOnInfoListener(this);
 //            mediaRecorder.setVideoFrameRate(20);
 
             mediaRecorder.prepare();
             mediaRecorder.start();
-        } catch (IllegalStateException e) {
+            isRecording = true;
+        } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            stopRecord();
         }
 
     }
 
+    boolean isRecording = false;
+
     @Override
     public void stopRecord() {
-        mediaRecorder.stop();
-        mediaRecorder.release();
-        mediaRecorder = null;
-        camera.lock();
+        if (mediaRecorder != null) {
+            if (isRecording)
+                mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+//            camera.lock();
+        }
+
     }
 
     @Override
@@ -293,13 +298,4 @@ public class Camera1Controller implements ICameraController, MediaRecorder.OnErr
         return facing;
     }
 
-    @Override
-    public void onError(MediaRecorder mr, int what, int extra) {
-
-    }
-
-    @Override
-    public void onInfo(MediaRecorder mr, int what, int extra) {
-
-    }
 }

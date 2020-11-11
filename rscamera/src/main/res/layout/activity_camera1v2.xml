@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="cn.module.rscamera.use.Camera1Activity">
 
-    <cn.readsense.module.camera1.CameraView
+    <cn.readsense.module.camera1.v2.CameraView
         android:id="@+id/cameraview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

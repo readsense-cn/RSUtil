@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CameraPreView">
+        <attr name="facing" format="integer" />
+        <attr name="w" format="integer" />
+        <attr name="h" format="integer" />
+        <attr name="flipXY" format="boolean" />
+        <attr name="previewMode" format="integer" />
+    </declare-styleable>
+</resources>
