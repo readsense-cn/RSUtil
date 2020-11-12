@@ -6,10 +6,13 @@ import android.view.WindowManager
 import cn.readsense.module.base.BaseCoreActivity
 import cn.readsense.module.camera1.v2.CameraParams.PreviewCallback
 import cn.readsense.module.camera1.v2.CameraView
+import cn.readsense.module.util.DLog
+import kotlinx.coroutines.*
 
 class Camera1v2Activity : BaseCoreActivity() {
 
     lateinit var cameraView: CameraView
+
     override fun getLayoutId(): Int {
         requestPermissions(Manifest.permission.CAMERA)
         return R.layout.activity_camera1v2
@@ -28,7 +31,15 @@ class Camera1v2Activity : BaseCoreActivity() {
             object : PreviewCallback {
                 override fun onPreviewFrame(data: ByteArray, camera: Camera) {
                     //接受buffer数据，但是注意外部不要修改buffer
+                    launch(Dispatchers.IO) {
+                        DLog.d("launch ${Thread.currentThread().name} working ")
+                        val event = async { delay(20) }
+                        event.await()
+                        DLog.d("launch ${Thread.currentThread().name} end ")
+                    }
+
                 }
             }
     }
+
 }

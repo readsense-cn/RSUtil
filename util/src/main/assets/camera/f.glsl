@@ -1,5 +1,6 @@
 #version 300 es
-#extension GL_OES_EGL_image_external_essl3 : require
+//#extension GL_OES_EGL_image_external_essl3 : require
+#extension GL_OES_EGL_image_external : require
 precision mediump float;
 uniform samplerExternalOES yuvTexSampler;
 in vec2 yuvTexCoords;

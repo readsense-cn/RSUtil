@@ -8,9 +8,13 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
-implementation 'com.github.readsense-cn:RSUtil:1.4.0'
+implementation 'com.github.readsense-cn:RSUtil:1.5.0'
 ```
-20200413: 增加坐标系转换接口，并归一化绘制坐标
+#### 20201111: 采用OpenGLES 3.0来渲染Camera
+代码位于：cn.readsense.module.camera1.v2.CameraView
+应用流程位于：rscamera/src/main/java/cn/module/rscamera/use/Camera1v2Activity.kt
+
+#### 20200413: 增加坐标系转换接口，并归一化绘制坐标
 将预览坐标系下的坐标转换至实际view坐标系下
 
 ![WechatIMG2.jpg](https://i.loli.net/2020/04/13/tXzbhiJ3pH6m4Bw.jpg)
@@ -21,7 +25,7 @@ cameraView.getDrawPositionY(float in, float w, boolean flip_x);
 ```
 
 
-20200408：精简应用端camera代码
+#### 20200408：精简应用端camera代码
 一键应用
 ```
 class MainActivity : BaseCoreActivity() {
@@ -37,7 +41,7 @@ class MainActivity : BaseCoreActivity() {
 }
 ```
 
-20200408:
+#### 20200408:
 1. 移除SurfaceView预览
 2. 新增CameraParams用于管理摄像头参数
 3. 长按view，调出配置参数页面

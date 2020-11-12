@@ -14,10 +14,10 @@ object TextureUtils {
     //    companion object {
     private val TAG = "TextureUtils"
     private val tex_vertex = floatArrayOf(//原纹理
-        0f, 1f,
         0f, 0f,
-        1f, 0f,
-        1f, 1f
+        0f, 1f,
+        1f, 1f,
+        1f, 0f
     )
 
     public val tex_vertexs = Array(8) { FloatArray(8) }

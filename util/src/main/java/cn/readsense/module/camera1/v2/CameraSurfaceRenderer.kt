@@ -20,7 +20,6 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
 
 
     private var uTextureSamplerLocation: Int = 0
-    private var uTextureMatrixLocation: Int = 0
 
     private val context = glSurfaceView.context
     private var program: Int = -1
@@ -32,17 +31,16 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
 
     //顶点坐标
     private val position_vertex = floatArrayOf(
-        -1f, 1f, 0f,
-        -1f, -1f, 0f,
-        1f, -1f, 0f,
-        1f, 1f, 0f
+        -1f, 1f,
+        -1f, -1f,
+        1f, -1f,
+        1f, 1f
     )
 
     private val VERTEX_INDEX = shortArrayOf(
         0, 1, 2,
         0, 2, 3
     )
-    private val transformMatrix = FloatArray(16)
 
     private var camera: Camera? = null
     private var surfaceTexture: SurfaceTexture? = null
@@ -99,7 +97,6 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
             ShaderUtil.loadFromAssetsFile("camera/v.glsl", context.resources),
             ShaderUtil.loadFromAssetsFile("camera/f.glsl", context.resources)
         )
-        uTextureMatrixLocation = GLES30.glGetUniformLocation(program, "uTextureMatrix")
         //获取Shader中定义的变量在program中的位置
         uTextureSamplerLocation = GLES30.glGetUniformLocation(program, "yuvTexSampler")
         uMatrixLocation = GLES30.glGetUniformLocation(program, "u_Matrix")
@@ -146,14 +143,19 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
             aspectRatio = viewW.toFloat() / (imgW.toFloat() * (viewH.toFloat() / imgH.toFloat()))
             Matrix.orthoM(mMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f)
         }
+        /**
+         *两种方法来避免拉伸情况
+         * 1. 利用正交投影，将多出的部分图像转移到可视范围之外，计算较简单，重复渲染
+         * 2. 裁剪纹理坐标，通过计算仅显示视野范围内的纹理，计算较复杂，渲染优化
+         */
+
     }
 
     override fun onDrawFrame(gl: GL10?) {
         surfaceTexture?.updateTexImage()
-        surfaceTexture?.getTransformMatrix(transformMatrix)
+
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT)
         GLES30.glUseProgram(program)
-
 
         GLES30.glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0)
 
@@ -162,13 +164,10 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
         //将此纹理单元床位片段着色器的uTextureSampler外部纹理采样器
         GLES30.glUniform1i(uTextureSamplerLocation, 0)
 
-        //将纹理矩阵传给片段着色器
-        GLES30.glUniformMatrix4fv(uTextureMatrixLocation, 1, false, transformMatrix, 0)
+        GLES30.glEnableVertexAttribArray(0)//输入顶点坐标
+        GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 0, vertexBuffer)
 
-        GLES30.glEnableVertexAttribArray(0);
-        GLES30.glVertexAttribPointer(0, 3, GLES30.GL_FLOAT, false, 0, vertexBuffer)
-
-        GLES30.glEnableVertexAttribArray(1)
+        GLES30.glEnableVertexAttribArray(1)//输入纹理坐标
         GLES30.glVertexAttribPointer(
             1,
             2,
@@ -176,7 +175,7 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
             false,
             0,
             textureVertexBuffers[params.previewMode]
-        );
+        )
 
         // 绘制
         GLES30.glDrawElements(
@@ -185,5 +184,9 @@ class CameraSurfaceRenderer constructor(private val glSurfaceView: GLSurfaceView
             GLES30.GL_UNSIGNED_SHORT,
             vertexIndexBuffer
         )
+        GLES30.glDisableVertexAttribArray(0)
+        GLES30.glDisableVertexAttribArray(1)
+
+
     }
 }
