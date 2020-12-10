@@ -1,14 +1,11 @@
 package cn.readsense.module.base
 
 import android.app.ProgressDialog
-import android.content.Context
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleObserver
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import cn.readsense.module.permissions.PermissionListener
 import cn.readsense.module.permissions.PermissionsUtil
 import cn.readsense.module.util.DisplayUtil
@@ -16,18 +13,15 @@ import cn.readsense.module.util.ToastUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import java.util.*
 
 abstract class BaseCoreActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     var progressDialog: ProgressDialog? = null
-    var unbinder: Unbinder? = null
     private var screenWidth = 0
     private var screenHeight = 0
     private var permissions: MutableList<String> = mutableListOf()
     private val lifecycleObservers: MutableList<LifecycleObserver> = mutableListOf()
     override fun setContentView(@LayoutRes layoutResID: Int) {
         super.setContentView(layoutResID)
-        unbinder = ButterKnife.bind(this)
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +93,6 @@ abstract class BaseCoreActivity : AppCompatActivity(), CoroutineScope by MainSco
 
     override fun onDestroy() {
         super.onDestroy()
-        unbinder!!.unbind()
         cancel()
     }
 

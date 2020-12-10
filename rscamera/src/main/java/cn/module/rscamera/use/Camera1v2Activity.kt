@@ -22,6 +22,10 @@ class Camera1v2Activity : BaseCoreActivity() {
     override fun initView() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        launch {
+
+
+        }
         cameraView = findViewById(R.id.cameraview)
         cameraView.cameraRenderer.params.facing = 0
         cameraView.cameraRenderer.params.w = 640

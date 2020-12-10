@@ -8,14 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 
 public abstract class BaseCoreFragment extends Fragment {
     public View rootView;
     public LayoutInflater inflater;
-    Unbinder unbinder;
 
     @Nullable
     @Override
@@ -24,7 +20,6 @@ public abstract class BaseCoreFragment extends Fragment {
         this.inflater = inflater;
         if (rootView == null) {
             rootView = inflater.inflate(this.getLayoutId(), container, false);
-            unbinder = ButterKnife.bind(this, rootView);
             initView();
         }
         ViewGroup parent = (ViewGroup) rootView.getParent();
@@ -37,7 +32,6 @@ public abstract class BaseCoreFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        unbinder.unbind();
     }
 
     protected abstract int getLayoutId();
