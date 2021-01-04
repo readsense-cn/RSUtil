@@ -66,6 +66,10 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
 
     private ToolWindow toolWindow;
 
+    public Paint getPaint() {
+        return paint;
+    }
+
     public SurfaceView getDrawView() {
         return drawView;
     }
@@ -76,6 +80,10 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
         drawView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         paint = new Paint();
         paint.setAntiAlias(true);
+        paint.setStrokeWidth(4f);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(26f);
+        paint.setStyle(Paint.Style.STROKE);
     }
 
 
