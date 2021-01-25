@@ -10,9 +10,6 @@ import cn.readsense.module.permissions.PermissionListener
 import cn.readsense.module.permissions.PermissionsUtil
 import cn.readsense.module.util.DisplayUtil
 import cn.readsense.module.util.ToastUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 
 abstract class BaseCoreActivity : AppCompatActivity() {
     var progressDialog: ProgressDialog? = null
