@@ -8,7 +8,7 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
-implementation 'com.github.readsense-cn:RSUtil:1.5.0'
+implementation 'com.github.readsense-cn:RSUtil:1.5.5'
 ```
 #### 20201111: 采用OpenGLES 3.0来渲染Camera
 代码位于：cn.readsense.module.camera1.v2.CameraView

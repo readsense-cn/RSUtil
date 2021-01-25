@@ -14,7 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 
-abstract class BaseCoreActivity : AppCompatActivity(), CoroutineScope by MainScope() {
+abstract class BaseCoreActivity : AppCompatActivity() {
     var progressDialog: ProgressDialog? = null
     private var screenWidth = 0
     private var screenHeight = 0
@@ -89,11 +89,6 @@ abstract class BaseCoreActivity : AppCompatActivity(), CoroutineScope by MainSco
         if (progressDialog != null) {
             progressDialog!!.dismiss()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        cancel()
     }
 
     protected abstract fun getLayoutId(): Int
