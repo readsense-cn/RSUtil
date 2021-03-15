@@ -22,10 +22,6 @@ class Camera1v2Activity : BaseCoreActivity() {
     override fun initView() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        launch {
-
-
-        }
         cameraView = findViewById(R.id.cameraview)
         cameraView.cameraRenderer.params.facing = 0
         cameraView.cameraRenderer.params.w = 640
@@ -36,18 +32,6 @@ class Camera1v2Activity : BaseCoreActivity() {
             object : PreviewCallback {
                 override fun onPreviewFrame(data: ByteArray, camera: Camera) {
                     //接受buffer数据，但是注意外部不要修改buffer
-
-                    launch(Dispatchers.IO) {
-                        DLog.d("launch ${Thread.currentThread().name} working ")
-                        val cost = measureTimeMillis {
-                            val event1 = async { delay(2000) }
-                            val event2 = async { delay(2000) }
-                            event1.await()
-                            event2.await()
-                        }
-
-                        DLog.d("launch ${Thread.currentThread().name} end cost :$cost")
-                    }
 
                 }
             }

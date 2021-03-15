@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Created by mac on 16/6/20.
@@ -111,8 +112,8 @@ public class BitmapUtil {
     }
 
     /*
-    *bitmap转base64
-    */
+     *bitmap转base64
+     */
     public static Bitmap base64ToBitmap(String base64String) {
         byte[] bytes = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -488,6 +489,135 @@ public class BitmapUtil {
             bitmap = null;
         }
         return bitmap;
+    }
+
+    /**
+     * 存储图片
+     */
+    public static void saveImageFromYuv(String name, int iw, int ih, String path, byte[]... yuvBytes) {
+        if (yuvBytes == null) return;
+        File tmpFile;
+        int i = 0;
+        for (byte[] bytes : yuvBytes) {
+            if (bytes == null) continue;
+            tmpFile = new File(path);
+            if (!tmpFile.exists()) {
+                tmpFile.mkdirs();
+            }
+            tmpFile = new File(path + "img_" + System.currentTimeMillis() + "_" + name + "_" + i + ".jpg");
+            saveImageFromYuv(tmpFile, iw, ih, bytes);
+            i++;
+        }
+    }
+
+    private static void saveImageFromYuv(File file, int iw, int ih, byte[] yuvBytes) {
+        FileOutputStream fos = null;
+        try {
+            YuvImage image = new YuvImage(yuvBytes, ImageFormat.NV21, iw, ih, null);
+            fos = new FileOutputStream(file);
+            image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 90, fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                assert fos != null;
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 存储图片
+     */
+    public static void saveImageFromBitmap(String name, String path, Bitmap... bitmaps) {
+        if (bitmaps == null) return;
+        int i = 0;
+        File tmpFile;
+        FileOutputStream fos;
+        for (Bitmap bitmap : bitmaps) {
+            tmpFile = new File(path + "img_" + System.currentTimeMillis() + "_" + name + "_" + i + ".jpg");
+            saveBitmap(bitmap, tmpFile);
+            i++;
+        }
+    }
+
+
+    /**
+     * Bitmap转化为ARGB数据，再转化为NV21数据
+     *
+     * @param src    传入ARGB_8888的Bitmap
+     * @param width  NV21图像的宽度
+     * @param height NV21图像的高度
+     * @return nv21数据
+     */
+    public static byte[] bitmapToNv21(Bitmap src, int width, int height) {
+        if (src != null && src.getWidth() >= width && src.getHeight() >= height) {
+            int[] argb = new int[width * height];
+            src.getPixels(argb, 0, width, 0, 0, width, height);
+            return argbToNv21(argb, width, height);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * ARGB数据转化为NV21数据
+     *
+     * @param argb   argb数据
+     * @param width  宽度
+     * @param height 高度
+     * @return nv21数据
+     */
+    private static byte[] argbToNv21(int[] argb, int width, int height) {
+        int frameSize = width * height;
+        int yIndex = 0;
+        int uvIndex = frameSize;
+        int index = 0;
+        byte[] nv21 = new byte[width * height * 3 / 2];
+        for (int j = 0; j < height; ++j) {
+            for (int i = 0; i < width; ++i) {
+                int R = (argb[index] & 0xFF0000) >> 16;
+                int G = (argb[index] & 0x00FF00) >> 8;
+                int B = argb[index] & 0x0000FF;
+                int Y = (66 * R + 129 * G + 25 * B + 128 >> 8) + 16;
+                int U = (-38 * R - 74 * G + 112 * B + 128 >> 8) + 128;
+                int V = (112 * R - 94 * G - 18 * B + 128 >> 8) + 128;
+                nv21[yIndex++] = (byte) (Y < 0 ? 0 : (Y > 255 ? 255 : Y));
+                if (j % 2 == 0 && index % 2 == 0 && uvIndex < nv21.length - 2) {
+                    nv21[uvIndex++] = (byte) (V < 0 ? 0 : (V > 255 ? 255 : V));
+                    nv21[uvIndex++] = (byte) (U < 0 ? 0 : (U > 255 ? 255 : U));
+                }
+
+                ++index;
+            }
+        }
+        return nv21;
+    }
+
+
+    Bitmap convert(Bitmap a, boolean horizontal, boolean vertical) {
+        int ww = a.getWidth();
+        int wh = a.getHeight();
+        Bitmap newb = Bitmap.createBitmap(ww, wh, Bitmap.Config.ARGB_8888);// 创建一个新的和SRC长度宽度一样的位图
+        Canvas cv = new Canvas(newb);
+        Matrix m = new Matrix();
+        m.postScale(1, -1);   //镜像垂直翻转
+        m.postScale(-1, 1);   //镜像水平翻转
+        m.postRotate(-90);  //旋转-90度
+        Bitmap new2 = Bitmap.createBitmap(a, 0, 0, ww, wh, m, true);
+        cv.drawBitmap(new2, new Rect(0, 0, new2.getWidth(), new2.getHeight()), new Rect(0, 0, ww, wh), null);
+        return newb;
+    }
+
+    public static byte[] getBytesFromBitmap(Bitmap bitmap) {
+        int bytes = bitmap.getByteCount();
+
+        ByteBuffer buf = ByteBuffer.allocate(bytes);
+        bitmap.copyPixelsToBuffer(buf);
+
+        return buf.array();
     }
 
 

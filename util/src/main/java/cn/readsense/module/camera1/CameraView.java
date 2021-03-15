@@ -34,7 +34,6 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
     private static final String TAG = "CameraView";
     private static final int MAIN_RET = 0x101;
     private static final int THREAD_RET = 0x102;
-    private static final int THREAD_OPENCAMERA = 0x103;
 
     private Context context;
     private CameraParams cameraParams;
@@ -187,13 +186,13 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
                             synchronized (Lock) {
                                 System.arraycopy(data, 0, buffer, 0, data.length);
                                 isBufferready = true;
-                                handler.sendEmptyMessage(THREAD_RET);
-//                                Object o = previewFrameCallback.analyseData(buffer);
-//                                Message msg1 = new Message();
-//                                msg1.what = MAIN_RET;
-//                                msg1.obj = o;
-//                                handlerMain.sendMessage(msg1);
                             }
+
+//                            Object o = previewFrameCallback.analyseData(data);
+//                            Message msg1 = new Message();
+//                            msg1.what = MAIN_RET;
+//                            msg1.obj = o;
+//                            handlerMain.sendMessage(msg1);
                         }
                     });
 
@@ -278,7 +277,7 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
 
                                 if (!isBufferready) {
                                     try {
-                                        Thread.sleep(1);
+                                        Thread.sleep(24);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
@@ -295,20 +294,16 @@ public class CameraView extends RelativeLayout implements LifecycleObserver {
                                     msg1.obj = o;
                                     handlerMain.sendMessage(msg1);
                                 }
-                                break;
                             }
-                            break;
-                        case THREAD_OPENCAMERA:
-
-
                             break;
                     }
 
                 }
             };
-            handler.sendEmptyMessage(THREAD_OPENCAMERA);
+            isBufferready = false;
+            is_thread_run = true;
             initCamera();
-//            handler.sendEmptyMessageDelayed(THREAD_RET, 1000);
+            handler.sendEmptyMessageDelayed(THREAD_RET, 1000);
         } else {
             initCamera();
         }
