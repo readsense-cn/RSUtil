@@ -20,8 +20,6 @@ public class Camera1Activity extends BaseCoreActivity {
         return R.layout.activity_camera1;
     }
 
-    boolean sleep = false;
-
     @Override
     protected void initView() {
         cameraView = findViewById(R.id.cameraview);
@@ -33,15 +31,6 @@ public class Camera1Activity extends BaseCoreActivity {
         cameraView.addPreviewFrameCallback(new CameraView.PreviewFrameCallback() {
             @Override
             public Object analyseData(byte[] data) {
-                if (sleep) {
-                    try {
-                        DLog.d("sleep 1");
-                        Thread.sleep(100);
-                        DLog.d("sleep 2");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
                 return null;
             }
 
@@ -52,13 +41,6 @@ public class Camera1Activity extends BaseCoreActivity {
         });
 //        cameraView.showCameraView();
         addLifecycleObserver(cameraView);
-
-        cameraView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sleep = !sleep;
-            }
-        });
 
     }
 
