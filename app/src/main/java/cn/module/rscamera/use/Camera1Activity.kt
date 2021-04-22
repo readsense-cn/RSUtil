@@ -8,7 +8,6 @@ import cn.readsense.module.camera1.CameraView.PreviewFrameCallback
 import java.io.FileOutputStream
 
 class Camera1Activity : BaseCoreActivity() {
-    private lateinit var cameraView: CameraView
 
     override fun getLayoutId(): Int {
         requestPermissions(
@@ -20,16 +19,30 @@ class Camera1Activity : BaseCoreActivity() {
 
     override fun initView() {
 
-        val fos = FileOutputStream("$filesDir/test.yuv")
-        cameraView = findViewById(R.id.cameraview)
-        cameraView.cameraParams.facing = Camera.CameraInfo.CAMERA_FACING_BACK
+        val cameraView1 = findViewById<CameraView>(R.id.cameraview1)
+        openCamera(cameraView1, Camera.CameraInfo.CAMERA_FACING_BACK, 0F, 0F,180)
+
+        val cameraView2 = findViewById<CameraView>(R.id.cameraview2)
+        openCamera(cameraView2, Camera.CameraInfo.CAMERA_FACING_FRONT, 640F, 0F)
+
+    }
+
+    private fun openCamera(cameraView: CameraView, facing: Int, x: Float, y: Float, oritationDisplay:Int=0) {
+
+        cameraView.cameraParams.facing = facing
         cameraView.cameraParams.isFilp = false
         cameraView.cameraParams.isScaleWidth = true
-        cameraView.cameraParams.previewSize.previewWidth = 1920
-        cameraView.cameraParams.previewSize.previewHeight = 1080
+        cameraView.cameraParams.oritationDisplay = oritationDisplay
+        cameraView.cameraParams.previewSize.previewWidth = 640
+        cameraView.cameraParams.previewSize.previewHeight = 480
+        cameraView.layoutParams.width = 640
+        cameraView.layoutParams.height = 480
+
+
+        cameraView.x = x
+        cameraView.y = y
         cameraView.addPreviewFrameCallback(object : PreviewFrameCallback {
             override fun analyseData(data: ByteArray): Any {
-                fos.write(data)
                 return 0
             }
 
@@ -37,12 +50,6 @@ class Camera1Activity : BaseCoreActivity() {
         })
         addLifecycleObserver(cameraView)
 
-        cameraView.setOnClickListener {
-            cameraView.releaseCamera()
-            fos.flush()
-            fos.close()
-            finish()
-        }
     }
 
 
